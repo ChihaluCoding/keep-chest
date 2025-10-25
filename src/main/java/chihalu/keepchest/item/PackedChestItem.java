@@ -41,7 +41,6 @@ import net.minecraft.world.World;
  * Item that stores the contents of a chest and can recreate it later.
  */
 public class PackedChestItem extends Item {
-        private static final String KEEP_CHEST_DATA_KEY = "KeepChestData";
         private static final String PRIMARY_STATE_KEY = "PrimaryState";
         private static final String SECONDARY_STATE_KEY = "SecondaryState";
         private static final String SECONDARY_BLOCK_ENTITY_KEY = "SecondaryBlockEntity";

@@ -1,0 +1,10 @@
+{
+        "text.keep-chest.death_chest_placed": "Skrzynia śmierci została umieszczona w (%s, %s, %s).",
+        "item.keep-chest.packed_chest": "Spakowana skrzynia",
+        "item.keep-chest.packed_chest.tooltip": "Postaw, aby odtworzyć zapisaną skrzynię.",
+        "item.keep-chest.packed_chest.tooltip.double": "Zawiera obie połówki podwójnej skrzyni.",
+        "message.keep-chest.packed": "Skrzynia została spakowana.",
+        "message.keep-chest.pack_failed": "Nie można spakować tej skrzyni.",
+        "message.keep-chest.unpack_failed": "Brakuje miejsca na rozpakowanie skrzyni.",
+        "message.keep-chest.unpacked": "Skrzynia została rozpakowana w %s, %s, %s."
+}

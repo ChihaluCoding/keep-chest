@@ -1,3 +1,10 @@
 {
-        "text.keep-chest.death_chest_placed": "A death chest was placed at (%s, %s, %s)."
+        "text.keep-chest.death_chest_placed": "A death chest was placed at (%s, %s, %s).",
+        "item.keep-chest.packed_chest": "Packed Chest",
+        "item.keep-chest.packed_chest.tooltip": "Place to restore the stored chest.",
+        "item.keep-chest.packed_chest.tooltip.double": "Contains both halves of a double chest.",
+        "message.keep-chest.packed": "Chest packed successfully.",
+        "message.keep-chest.pack_failed": "This chest could not be packed.",
+        "message.keep-chest.unpack_failed": "There is not enough room to unpack the chest.",
+        "message.keep-chest.unpacked": "Chest unpacked at %s, %s, %s."
 }

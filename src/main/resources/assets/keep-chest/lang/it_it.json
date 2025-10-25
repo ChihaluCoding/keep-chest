@@ -1,0 +1,10 @@
+{
+        "text.keep-chest.death_chest_placed": "Un forziere della morte è stato posizionato a (%s, %s, %s).",
+        "item.keep-chest.packed_chest": "Baule Compattato",
+        "item.keep-chest.packed_chest.tooltip": "Posizionalo per ripristinare il baule salvato.",
+        "item.keep-chest.packed_chest.tooltip.double": "Contiene entrambe le metà di un baule doppio.",
+        "message.keep-chest.packed": "Baule compattato con successo.",
+        "message.keep-chest.pack_failed": "Impossibile compattare questo baule.",
+        "message.keep-chest.unpack_failed": "Non c'è abbastanza spazio per aprire il baule.",
+        "message.keep-chest.unpacked": "Baule aperto a %s, %s, %s."
+}

@@ -1,0 +1,10 @@
+{
+        "text.keep-chest.death_chest_placed": "죽음의 상자가 (%s, %s, %s)에 설치되었습니다.",
+        "item.keep-chest.packed_chest": "포장된 상자",
+        "item.keep-chest.packed_chest.tooltip": "설치하면 저장된 상자를 복원합니다.",
+        "item.keep-chest.packed_chest.tooltip.double": "큰 상자의 두 부분을 모두 포함합니다.",
+        "message.keep-chest.packed": "상자를 포장했습니다.",
+        "message.keep-chest.pack_failed": "이 상자는 포장할 수 없습니다.",
+        "message.keep-chest.unpack_failed": "상자를 펼칠 공간이 부족합니다.",
+        "message.keep-chest.unpacked": "상자를 %s, %s, %s 위치에 펼쳤습니다."
+}

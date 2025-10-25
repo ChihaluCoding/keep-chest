@@ -3,7 +3,7 @@
 	"id": "keep-chest",
 	"version": "${version}",
 	"name": "Keep Chest",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+        "description": "Automatically stores a player's inventory inside a death chest when they die.",
 	"authors": [
 		"Me!"
 	],

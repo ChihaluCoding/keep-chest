@@ -3,6 +3,8 @@ package chihalu.keepchest;
 import java.util.Optional;
 
 import net.fabricmc.api.ClientModInitializer;
+import chihalu.keepchest.item.KeepChestItems;
+import chihalu.keepchest.item.PackedChestItem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -10,9 +12,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-
-import chihalu.keepchest.item.KeepChestItems;
-import chihalu.keepchest.item.PackedChestItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.Direction;
 

@@ -3,7 +3,7 @@
         "item.keep-chest.packed_chest": "Gepackte Truhe",
         "item.keep-chest.packed_chest.tooltip": "Platziere sie, um die gespeicherte Truhe wiederherzustellen.",
         "item.keep-chest.packed_chest.tooltip.double": "Enthält beide Hälften einer Doppelkiste.",
-        "message.keep-chest.packed": "Truhe erfolgreich gepackt.",
+        "message.keep-chest.packed": "%s erfolgreich gepackt.",
         "message.keep-chest.pack_failed": "Diese Truhe konnte nicht gepackt werden.",
         "message.keep-chest.unpack_failed": "Es ist nicht genug Platz zum Auspacken der Truhe.",
         "message.keep-chest.unpacked": "Truhe bei %s, %s, %s ausgepackt.",

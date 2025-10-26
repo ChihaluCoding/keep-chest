@@ -1,7 +1,7 @@
 {
   "item.keep-chest.packed_chest": "収納済みチェスト",
   "message.keep-chest.pack_failed": "チェストや樽を収納できませんでした。",
-  "message.keep-chest.packed": "チェストや樽を収納しました。",
+  "message.keep-chest.packed": "%sを収納しました。",
   "message.keep-chest.unpacked": "チェストや樽を %1$s, %2$s, %3$s に再設置しました。",
   "message.keep-chest.unpack_failed": "収納コンテナの設置に失敗しました。",
   "text.keep-chest.death_chest_placed": "収納コンテナの中身を %1$s, %2$s, %3$s に設置したコンテナへ保管しました。",

@@ -3,7 +3,7 @@
         "item.keep-chest.packed_chest": "Paketlenmiş Sandık",
         "item.keep-chest.packed_chest.tooltip": "Kaydedilen sandığı geri getirmek için yerleştir.",
         "item.keep-chest.packed_chest.tooltip.double": "Çift sandığın her iki yarısını içerir.",
-        "message.keep-chest.packed": "Sandık paketlendi.",
+        "message.keep-chest.packed": "%s paketlendi.",
         "message.keep-chest.pack_failed": "Bu sandık paketlenemedi.",
         "message.keep-chest.unpack_failed": "Sandığı açmak için yeterli alan yok.",
         "message.keep-chest.unpacked": "Sandık %s, %s, %s konumunda açıldı.",

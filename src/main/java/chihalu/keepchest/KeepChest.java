@@ -73,7 +73,9 @@ public class KeepChest implements ModInitializer {
                         removeChestBlocks(serverWorld, pos, state, packResult.secondaryPos());
 
                         serverPlayer.incrementStat(Stats.MINED.getOrCreateStat(state.getBlock()));
-                        serverPlayer.sendMessage(Text.translatable("message.keep-chest.packed"), true);
+                        serverPlayer.sendMessage(
+                                        Text.translatable("message.keep-chest.packed", state.getBlock().getName()),
+                                        true);
                         SoundEvent sound = state.getBlock() instanceof BarrelBlock ? SoundEvents.BLOCK_BARREL_CLOSE
                                         : SoundEvents.BLOCK_CHEST_CLOSE;
                         world.playSound(null, pos, sound, SoundCategory.BLOCKS, 0.75f, 0.9f);

@@ -71,7 +71,7 @@ public final class DeathChestManager {
                 chest.markDirty();
                 world.updateListeners(chestPos, chest.getCachedState(), chest.getCachedState(), Block.NOTIFY_ALL);
                 dropAdditionalItems(world, chestPos, drops.regularDrops(), player.getUuid());
-                dropPackedChestItems(world, chestPos, drops.packedChestCount(), player.getUuid());
+                dropContainerItems(world, chestPos, drops.containerDrops(), player.getUuid());
                 player.sendMessage(Text.translatable("text.keep-chest.death_chest_placed", chestPos.getX(), chestPos.getY(), chestPos.getZ()), false);
                 return true;
         }
@@ -81,14 +81,14 @@ public final class DeathChestManager {
                 List<ItemStack> original = new ArrayList<>(inventory.size());
                 List<ItemStack> chestItems = new ArrayList<>();
                 List<ItemStack> regularDrops = new ArrayList<>();
-                int packedChestCount = 0;
+                List<ItemStack> containerDrops = new ArrayList<>();
                 for (int slot = 0; slot < inventory.size(); slot++) {
                         ItemStack stack = inventory.getStack(slot);
                         if (!stack.isEmpty()) {
                                 original.add(stack.copy());
                                 if (stack.isOf(KeepChestItems.PACKED_CHEST)) {
-                                        packedChestCount++;
                                         chestItems.addAll(PackedChestItem.getStoredItems(world.getRegistryManager(), stack));
+                                        containerDrops.addAll(PackedChestItem.getContainerDrops(stack));
                                 } else {
                                         regularDrops.add(stack.copy());
                                 }
@@ -97,7 +97,7 @@ public final class DeathChestManager {
                 }
 
                 inventory.markDirty();
-                return new CollectedDrops(original, chestItems, regularDrops, packedChestCount);
+                return new CollectedDrops(original, chestItems, regularDrops, containerDrops);
         }
 
         private static void restoreInventory(ServerPlayerEntity player, List<ItemStack> drops) {
@@ -193,13 +193,15 @@ public final class DeathChestManager {
                 }
         }
 
-        private static void dropPackedChestItems(ServerWorld world, BlockPos chestPos, int count, UUID owner) {
-                for (int i = 0; i < count; i++) {
-                        dropRemainder(world, chestPos, new ItemStack(KeepChestItems.PACKED_CHEST), owner);
+        private static void dropContainerItems(ServerWorld world, BlockPos chestPos, List<ItemStack> stacks, UUID owner) {
+                for (ItemStack stack : stacks) {
+                        if (!stack.isEmpty()) {
+                                dropRemainder(world, chestPos, stack, owner);
+                        }
                 }
         }
 
-        private record CollectedDrops(List<ItemStack> originalInventory, List<ItemStack> chestItems, List<ItemStack> regularDrops,
-                        int packedChestCount) {
+        private record CollectedDrops(List<ItemStack> originalInventory, List<ItemStack> chestItems,
+                        List<ItemStack> regularDrops, List<ItemStack> containerDrops) {
         }
 }

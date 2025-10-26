@@ -271,6 +271,36 @@ public class PackedChestItem extends Item {
                 return contents;
         }
 
+        public static List<ItemStack> getContainerDrops(ItemStack stack) {
+                List<ItemStack> drops = new ArrayList<>();
+
+                NbtComponent customData = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+                NbtCompound keepChestData = customData.copyNbt();
+
+                BlockState primaryState = readStateFromData(keepChestData.getCompoundOrEmpty(PRIMARY_STATE_KEY));
+                addContainerDrop(drops, primaryState);
+
+                if (keepChestData.getBoolean(DOUBLE_KEY).orElse(false)) {
+                        BlockState secondaryState = readStateFromData(keepChestData.getCompoundOrEmpty(SECONDARY_STATE_KEY));
+                        addContainerDrop(drops, secondaryState);
+                }
+
+                if (drops.isEmpty()) {
+                        drops.add(new ItemStack(Blocks.CHEST));
+                }
+
+                return drops;
+        }
+
+        private static void addContainerDrop(List<ItemStack> drops, BlockState state) {
+                Block block = state.getBlock();
+                if (!(block instanceof ChestBlock) && !(block instanceof TrappedChestBlock)) {
+                        block = Blocks.CHEST;
+                }
+
+                drops.add(new ItemStack(block));
+        }
+
         private static void appendInventoryFromEntityData(List<ItemStack> contents, RegistryWrapper.WrapperLookup registryLookup,
                         TypedEntityData<BlockEntityType<?>> entityData, BlockState preferredState) {
                 if (entityData == null) {

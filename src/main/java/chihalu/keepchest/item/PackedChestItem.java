@@ -1,5 +1,7 @@
 package chihalu.keepchest.item;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
@@ -7,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.TrappedChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -25,6 +28,7 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -116,6 +120,11 @@ public class PackedChestItem extends Item {
                 RegistryEntryLookup<Block> blockLookup = world.getRegistryManager().getOrThrow(RegistryKeys.BLOCK);
                 BlockState primaryState = NbtHelper.toBlockState(blockLookup, keepChestData.getCompoundOrEmpty(PRIMARY_STATE_KEY));
 
+                Direction desiredFacing = determineFacing(context, primaryState);
+                if (primaryState.contains(ChestBlock.FACING)) {
+                        primaryState = primaryState.with(ChestBlock.FACING, desiredFacing);
+                }
+
                 ItemPlacementContext placementContext = new ItemPlacementContext(context);
                 BlockPos primaryPos = placementContext.getBlockPos();
 
@@ -124,7 +133,7 @@ public class PackedChestItem extends Item {
                         return ActionResult.FAIL;
                 }
 
-                boolean isDouble = keepChestData.getBoolean(DOUBLE_KEY, false);
+                boolean isDouble = keepChestData.getBoolean(DOUBLE_KEY).orElse(false);
                 BlockPos secondaryPos = null;
                 BlockState secondaryState = null;
                 TypedEntityData<BlockEntityType<?>> secondaryData = null;
@@ -142,6 +151,9 @@ public class PackedChestItem extends Item {
                         }
 
                         secondaryState = NbtHelper.toBlockState(blockLookup, keepChestData.getCompoundOrEmpty(SECONDARY_STATE_KEY));
+                        if (secondaryState.contains(ChestBlock.FACING)) {
+                                secondaryState = secondaryState.with(ChestBlock.FACING, desiredFacing);
+                        }
                         if (!canPlace(world, secondaryPos, placementContext, secondaryState)) {
                                 notifyPlacementFailure(context.getPlayer());
                                 return ActionResult.FAIL;
@@ -227,12 +239,96 @@ public class PackedChestItem extends Item {
 
                 Direction facing = state.get(ChestBlock.FACING);
                 Direction offset = state.get(ChestBlock.CHEST_TYPE) == ChestType.LEFT
-                                ? facing.rotateYCounterclockwise()
-                                : facing.rotateYClockwise();
+                                ? facing.rotateYClockwise()
+                                : facing.rotateYCounterclockwise();
                 return pos.offset(offset);
         }
 
         public record PackResult(ItemStack stack, @Nullable BlockPos secondaryPos) {
+        }
+
+        public static List<ItemStack> getStoredItems(RegistryWrapper.WrapperLookup registryLookup, ItemStack stack) {
+                List<ItemStack> contents = new ArrayList<>();
+
+                TypedEntityData<BlockEntityType<?>> primaryData = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+                if (primaryData == null) {
+                        return contents;
+                }
+
+                NbtComponent customData = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+                NbtCompound keepChestData = customData.copyNbt();
+                BlockState primaryState = readStateFromData(keepChestData.getCompoundOrEmpty(PRIMARY_STATE_KEY));
+                appendInventoryFromEntityData(contents, registryLookup, primaryData, primaryState);
+                if (keepChestData.getBoolean(DOUBLE_KEY).orElse(false)
+                                && keepChestData.contains(SECONDARY_BLOCK_ENTITY_KEY)) {
+                        BlockState secondaryState = readStateFromData(keepChestData.getCompoundOrEmpty(SECONDARY_STATE_KEY));
+                        BlockEntityType<?> secondaryType = resolveSecondaryType(keepChestData, secondaryState);
+                        TypedEntityData<BlockEntityType<?>> secondaryData = TypedEntityData.create(secondaryType,
+                                        keepChestData.getCompoundOrEmpty(SECONDARY_BLOCK_ENTITY_KEY));
+                        appendInventoryFromEntityData(contents, registryLookup, secondaryData, secondaryState);
+                }
+
+                return contents;
+        }
+
+        private static void appendInventoryFromEntityData(List<ItemStack> contents, RegistryWrapper.WrapperLookup registryLookup,
+                        TypedEntityData<BlockEntityType<?>> entityData, BlockState preferredState) {
+                if (entityData == null) {
+                        return;
+                }
+
+                Object rawType = entityData.getType();
+                if (!(rawType instanceof BlockEntityType<?> blockEntityType)) {
+                        return;
+                }
+
+                BlockState state = preferredState != null ? preferredState
+                                : (blockEntityType == BlockEntityType.TRAPPED_CHEST ? Blocks.TRAPPED_CHEST.getDefaultState()
+                                                : Blocks.CHEST.getDefaultState());
+
+                BlockEntity blockEntity = blockEntityType.instantiate(BlockPos.ORIGIN, state);
+                if (!(blockEntity instanceof ChestBlockEntity chestBlockEntity)) {
+                        return;
+                }
+
+                if (!entityData.applyToBlockEntity(chestBlockEntity, registryLookup)) {
+                        return;
+                }
+
+                for (int slot = 0; slot < chestBlockEntity.size(); slot++) {
+                        ItemStack stack = chestBlockEntity.getStack(slot);
+                        if (!stack.isEmpty()) {
+                                contents.add(stack.copy());
+                        }
+                }
+        }
+
+        private static BlockState readStateFromData(NbtCompound stateData) {
+                if (stateData.isEmpty()) {
+                        return Blocks.CHEST.getDefaultState();
+                }
+
+                String blockName = stateData.getString("Name").orElse("");
+                if (!blockName.isEmpty()) {
+                        Identifier identifier = Identifier.tryParse(blockName);
+                        if (identifier != null) {
+                                Block block = Registries.BLOCK.get(identifier);
+                                if (block != Blocks.AIR) {
+                                        return block.getDefaultState();
+                                }
+                        }
+                }
+
+                return Blocks.CHEST.getDefaultState();
+        }
+
+        private static Direction determineFacing(ItemUsageContext context, BlockState savedState) {
+                PlayerEntity player = context.getPlayer();
+                if (player != null) {
+                        return player.getHorizontalFacing().getOpposite();
+                }
+
+                return savedState.contains(ChestBlock.FACING) ? savedState.get(ChestBlock.FACING) : Direction.NORTH;
         }
 
         private static BlockEntityType<?> resolveSecondaryType(NbtCompound keepChestData, BlockState secondaryState) {

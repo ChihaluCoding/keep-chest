@@ -1,10 +1,8 @@
 {
-        "text.keep-chest.death_chest_placed": "デスチェストが (%s, %s, %s) に設置されました。",
-        "item.keep-chest.packed_chest": "収納されたチェスト",
-        "item.keep-chest.packed_chest.tooltip": "設置すると保存されたチェストを復元します。",
-        "item.keep-chest.packed_chest.tooltip.double": "両側のラージチェストを含みます。",
-        "message.keep-chest.packed": "チェストを収納しました。",
-        "message.keep-chest.pack_failed": "このチェストは収納できませんでした。",
-        "message.keep-chest.unpack_failed": "チェストを展開するスペースがありません。",
-        "message.keep-chest.unpacked": "チェストを %s, %s, %s に設置しました。"
+  "item.keep-chest.packed_chest": "収納済みチェスト",
+  "message.keep-chest.pack_failed": "チェストを収納できませんでした。",
+  "message.keep-chest.packed": "チェストを収納しました。",
+  "message.keep-chest.unpacked": "チェストを %1$s, %2$s, %3$s に再設置しました。",
+  "message.keep-chest.unpack_failed": "収納チェストの設置に失敗しました。",
+  "text.keep-chest.death_chest_placed": "収納チェストの中身を %1$s, %2$s, %3$s に設置したチェストへ保管しました。"
 }

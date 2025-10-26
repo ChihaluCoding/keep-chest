@@ -117,20 +117,56 @@ public class PackedChestItem extends Item {
                         return ActionResult.PASS;
                 }
 
+                ItemPlacementContext placementContext = new ItemPlacementContext(context);
+                Optional<PlacementPlan> placement = preparePlacement(world, placementContext, primaryData, keepChestData);
+                if (placement.isEmpty()) {
+                        notifyPlacementFailure(context.getPlayer());
+                        return ActionResult.FAIL;
+                }
+
+                PlacementPlan plan = placement.get();
+                if (!placeChest(world, plan.primaryPos(), plan.primaryState(), plan.primaryData())) {
+                        notifyPlacementFailure(context.getPlayer());
+                        return ActionResult.FAIL;
+                }
+
+                if (plan.isDouble()) {
+                        placeChest(world, plan.secondaryPos(), plan.secondaryState(), plan.secondaryData());
+                }
+
+                PlayerEntity player = context.getPlayer();
+                if (player instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.incrementStat(Stats.USED.getOrCreateStat(this));
+                        serverPlayer.sendMessage(
+                                        Text.translatable("message.keep-chest.unpacked", plan.primaryPos().getX(),
+                                                        plan.primaryPos().getY(), plan.primaryPos().getZ()),
+                                        true);
+                }
+
+                stack.decrement(1);
+                world.playSound(null, plan.primaryPos(), SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.8f, 0.95f);
+                return ActionResult.SUCCESS;
+        }
+
+        private static void notifyPlacementFailure(@Nullable PlayerEntity player) {
+                if (player instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.sendMessage(Text.translatable("message.keep-chest.unpack_failed"), true);
+                }
+        }
+
+        private static Optional<PlacementPlan> preparePlacement(World world, ItemPlacementContext placementContext,
+                        TypedEntityData<BlockEntityType<?>> primaryData, NbtCompound keepChestData) {
                 RegistryEntryLookup<Block> blockLookup = world.getRegistryManager().getOrThrow(RegistryKeys.BLOCK);
                 BlockState primaryState = NbtHelper.toBlockState(blockLookup, keepChestData.getCompoundOrEmpty(PRIMARY_STATE_KEY));
 
-                Direction desiredFacing = determineFacing(context, primaryState);
+                Direction desiredFacing = determineFacing(placementContext, primaryState);
                 if (primaryState.contains(ChestBlock.FACING)) {
                         primaryState = primaryState.with(ChestBlock.FACING, desiredFacing);
                 }
 
-                ItemPlacementContext placementContext = new ItemPlacementContext(context);
                 BlockPos primaryPos = placementContext.getBlockPos();
-
                 if (!canPlace(world, primaryPos, placementContext, primaryState)) {
-                        notifyPlacementFailure(context.getPlayer());
-                        return ActionResult.FAIL;
+                        return Optional.empty();
                 }
 
                 boolean isDouble = keepChestData.getBoolean(DOUBLE_KEY).orElse(false);
@@ -140,23 +176,22 @@ public class PackedChestItem extends Item {
 
                 if (isDouble) {
                         if (!keepChestData.contains(SECONDARY_STATE_KEY) || !keepChestData.contains(SECONDARY_BLOCK_ENTITY_KEY)) {
-                                notifyPlacementFailure(context.getPlayer());
-                                return ActionResult.FAIL;
+                                return Optional.empty();
                         }
 
                         secondaryPos = findConnectedChestPos(primaryPos, primaryState);
                         if (secondaryPos == null) {
-                                notifyPlacementFailure(context.getPlayer());
-                                return ActionResult.FAIL;
+                                return Optional.empty();
                         }
 
-                        secondaryState = NbtHelper.toBlockState(blockLookup, keepChestData.getCompoundOrEmpty(SECONDARY_STATE_KEY));
+                        secondaryState = NbtHelper.toBlockState(blockLookup,
+                                        keepChestData.getCompoundOrEmpty(SECONDARY_STATE_KEY));
                         if (secondaryState.contains(ChestBlock.FACING)) {
                                 secondaryState = secondaryState.with(ChestBlock.FACING, desiredFacing);
                         }
+
                         if (!canPlace(world, secondaryPos, placementContext, secondaryState)) {
-                                notifyPlacementFailure(context.getPlayer());
-                                return ActionResult.FAIL;
+                                return Optional.empty();
                         }
 
                         NbtCompound secondaryEntityNbt = keepChestData.getCompoundOrEmpty(SECONDARY_BLOCK_ENTITY_KEY);
@@ -164,33 +199,8 @@ public class PackedChestItem extends Item {
                         secondaryData = TypedEntityData.create(secondaryType, secondaryEntityNbt);
                 }
 
-                if (!placeChest(world, primaryPos, primaryState, primaryData)) {
-                        notifyPlacementFailure(context.getPlayer());
-                        return ActionResult.FAIL;
-                }
-
-                if (isDouble && secondaryPos != null && secondaryState != null && secondaryData != null) {
-                        placeChest(world, secondaryPos, secondaryState, secondaryData);
-                }
-
-                PlayerEntity player = context.getPlayer();
-                if (player instanceof ServerPlayerEntity serverPlayer) {
-                        serverPlayer.incrementStat(Stats.USED.getOrCreateStat(this));
-                        serverPlayer.sendMessage(
-                                        Text.translatable("message.keep-chest.unpacked", primaryPos.getX(), primaryPos.getY(),
-                                                        primaryPos.getZ()),
-                                        true);
-                }
-
-                stack.decrement(1);
-                world.playSound(null, primaryPos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.8f, 0.95f);
-                return ActionResult.SUCCESS;
-        }
-
-        private static void notifyPlacementFailure(@Nullable PlayerEntity player) {
-                if (player instanceof ServerPlayerEntity serverPlayer) {
-                        serverPlayer.sendMessage(Text.translatable("message.keep-chest.unpack_failed"), true);
-                }
+                return Optional.of(new PlacementPlan(primaryPos, primaryState, primaryData, secondaryPos, secondaryState,
+                                secondaryData));
         }
 
         private static boolean placeChest(World world, BlockPos pos, BlockState state,
@@ -245,6 +255,39 @@ public class PackedChestItem extends Item {
         }
 
         public record PackResult(ItemStack stack, @Nullable BlockPos secondaryPos) {
+        }
+
+        public record PlacementPreview(BlockPos primaryPos, BlockState primaryState, @Nullable BlockPos secondaryPos,
+                        @Nullable BlockState secondaryState) {
+                public boolean isDouble() {
+                        return secondaryPos != null && secondaryState != null;
+                }
+        }
+
+        private record PlacementPlan(BlockPos primaryPos, BlockState primaryState,
+                        TypedEntityData<BlockEntityType<?>> primaryData, @Nullable BlockPos secondaryPos,
+                        @Nullable BlockState secondaryState, @Nullable TypedEntityData<BlockEntityType<?>> secondaryData) {
+                private boolean isDouble() {
+                        return secondaryPos != null && secondaryState != null && secondaryData != null;
+                }
+        }
+
+        public static Optional<PlacementPreview> getPlacementPreview(World world, ItemPlacementContext placementContext,
+                        ItemStack stack) {
+                TypedEntityData<BlockEntityType<?>> primaryData = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+                if (primaryData == null) {
+                        return Optional.empty();
+                }
+
+                NbtComponent customData = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+                NbtCompound keepChestData = customData.copyNbt();
+                if (keepChestData.isEmpty() || !keepChestData.contains(PRIMARY_STATE_KEY)) {
+                        return Optional.empty();
+                }
+
+                Optional<PlacementPlan> placementPlan = preparePlacement(world, placementContext, primaryData, keepChestData);
+                return placementPlan.map(plan -> new PlacementPreview(plan.primaryPos(), plan.primaryState(),
+                                plan.secondaryPos(), plan.secondaryState()));
         }
 
         public static List<ItemStack> getStoredItems(RegistryWrapper.WrapperLookup registryLookup, ItemStack stack) {

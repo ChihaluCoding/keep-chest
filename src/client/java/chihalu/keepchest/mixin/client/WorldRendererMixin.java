@@ -1,5 +1,7 @@
 package chihalu.keepchest.mixin.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +21,6 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
@@ -50,70 +51,52 @@ abstract class WorldRendererMixin {
                 if (player == null) {
                         return;
                 }
-                OutlineRenderState previewState = keepChest$createPreviewState(outlineRenderState, player, client,
-                                placementPreview);
-                if (previewState == null) {
+                List<OutlineRenderState> previewStates = keepChest$createPreviewStates(outlineRenderState, player,
+                                client, placementPreview);
+                if (previewStates.isEmpty()) {
                         return;
                 }
 
                 keepChest$renderingPreview = true;
                 try {
-                        ((WorldRendererInvoker) (Object) this).keepChest$drawBlockOutline(matrices, vertexConsumer,
-                                        cameraX, cameraY, cameraZ, previewState, KEEP_CHEST_PREVIEW_COLOR);
+                        WorldRendererInvoker renderer = (WorldRendererInvoker) (Object) this;
+                        for (OutlineRenderState previewState : previewStates) {
+                                renderer.keepChest$drawBlockOutline(matrices, vertexConsumer, cameraX, cameraY, cameraZ,
+                                                previewState, KEEP_CHEST_PREVIEW_COLOR);
+                        }
                 } finally {
                         keepChest$renderingPreview = false;
                 }
         }
 
         @Unique
-        private OutlineRenderState keepChest$createPreviewState(OutlineRenderState outlineRenderState,
+        private List<OutlineRenderState> keepChest$createPreviewStates(OutlineRenderState outlineRenderState,
                         ClientPlayerEntity player, MinecraftClient client, PackedChestItem.PlacementPreview preview) {
                 BlockPos primaryPos = preview.primaryPos();
                 BlockState primaryState = preview.primaryState();
                 if (primaryPos == null || primaryState == null) {
-                        return null;
+                        return List.of();
                 }
 
+                boolean translucent = outlineRenderState.isTranslucent();
+                boolean highContrast = outlineRenderState.highContrast();
+
                 VoxelShape primaryShape = keepChest$getOutlineShape(client, player, primaryPos, primaryState);
-                BlockPos basePos = primaryPos;
-                VoxelShape combinedShape = primaryShape;
+                List<OutlineRenderState> previewStates = new ArrayList<>();
+                previewStates.add(new OutlineRenderState(primaryPos, translucent, highContrast, primaryShape));
 
                 if (preview.isDouble()) {
                         BlockPos secondaryPos = preview.secondaryPos();
                         BlockState secondaryState = preview.secondaryState();
                         if (secondaryPos != null && secondaryState != null) {
-                                int baseX = Math.min(primaryPos.getX(), secondaryPos.getX());
-                                int baseY = Math.min(primaryPos.getY(), secondaryPos.getY());
-                                int baseZ = Math.min(primaryPos.getZ(), secondaryPos.getZ());
-                                basePos = new BlockPos(baseX, baseY, baseZ);
-
-                                Box primaryBox = primaryShape.getBoundingBox();
-                                double minX = primaryBox.minX + primaryPos.getX() - baseX;
-                                double minY = primaryBox.minY + primaryPos.getY() - baseY;
-                                double minZ = primaryBox.minZ + primaryPos.getZ() - baseZ;
-                                double maxX = primaryBox.maxX + primaryPos.getX() - baseX;
-                                double maxY = primaryBox.maxY + primaryPos.getY() - baseY;
-                                double maxZ = primaryBox.maxZ + primaryPos.getZ() - baseZ;
-
                                 VoxelShape secondaryShape = keepChest$getOutlineShape(client, player, secondaryPos,
                                                 secondaryState);
-                                Box secondaryBox = secondaryShape.getBoundingBox();
-                                double secondaryOffsetX = secondaryPos.getX() - baseX;
-                                double secondaryOffsetY = secondaryPos.getY() - baseY;
-                                double secondaryOffsetZ = secondaryPos.getZ() - baseZ;
-
-                                minX = Math.min(minX, secondaryBox.minX + secondaryOffsetX);
-                                minY = Math.min(minY, secondaryBox.minY + secondaryOffsetY);
-                                minZ = Math.min(minZ, secondaryBox.minZ + secondaryOffsetZ);
-                                maxX = Math.max(maxX, secondaryBox.maxX + secondaryOffsetX);
-                                maxY = Math.max(maxY, secondaryBox.maxY + secondaryOffsetY);
-                                maxZ = Math.max(maxZ, secondaryBox.maxZ + secondaryOffsetZ);
-
-                                combinedShape = VoxelShapes.cuboid(minX, minY, minZ, maxX, maxY, maxZ);
+                                previewStates.add(new OutlineRenderState(secondaryPos, translucent, highContrast,
+                                                secondaryShape));
                         }
                 }
 
-                return new OutlineRenderState(basePos, true, outlineRenderState.highContrast(), combinedShape);
+                return previewStates;
         }
 
         @Unique

@@ -180,30 +180,18 @@ abstract class WorldRendererMixin {
                 float blue = face == front ? 1.0f : 0.0f;
 
                 switch (face) {
-                case DOWN -> {
-                        keepChest$emitQuad(consumer, matrix, minX, minY, minZ, maxX, minY, minZ, maxX, minY, maxZ, minX,
-                                        minY, maxZ, red, green, blue, alpha);
-                }
-                case UP -> {
-                        keepChest$emitQuad(consumer, matrix, minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, maxZ, maxX,
-                                        maxY, minZ, red, green, blue, alpha);
-                }
-                case NORTH -> {
-                        keepChest$emitQuad(consumer, matrix, minX, minY, minZ, minX, maxY, minZ, maxX, maxY, minZ, maxX,
-                                        minY, minZ, red, green, blue, alpha);
-                }
-                case SOUTH -> {
-                        keepChest$emitQuad(consumer, matrix, minX, minY, maxZ, maxX, minY, maxZ, maxX, maxY, maxZ, minX,
-                                        maxY, maxZ, red, green, blue, alpha);
-                }
-                case WEST -> {
-                        keepChest$emitQuad(consumer, matrix, minX, minY, minZ, minX, minY, maxZ, minX, maxY, maxZ, minX,
-                                        maxY, minZ, red, green, blue, alpha);
-                }
-                case EAST -> {
-                        keepChest$emitQuad(consumer, matrix, maxX, minY, minZ, maxX, maxY, minZ, maxX, maxY, maxZ, maxX,
-                                        minY, maxZ, red, green, blue, alpha);
-                }
+                case DOWN -> keepChest$emitQuad(consumer, matrix, minX, minY, minZ, maxX, minY, minZ, minX, minY, maxZ,
+                                maxX, minY, maxZ, red, green, blue, alpha);
+                case UP -> keepChest$emitQuad(consumer, matrix, minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, minZ,
+                                maxX, maxY, maxZ, red, green, blue, alpha);
+                case NORTH -> keepChest$emitQuad(consumer, matrix, maxX, maxY, minZ, maxX, minY, minZ, minX, maxY, minZ,
+                                minX, minY, minZ, red, green, blue, alpha);
+                case SOUTH -> keepChest$emitQuad(consumer, matrix, minX, maxY, maxZ, minX, minY, maxZ, maxX, maxY, maxZ,
+                                maxX, minY, maxZ, red, green, blue, alpha);
+                case WEST -> keepChest$emitQuad(consumer, matrix, minX, minY, minZ, minX, minY, maxZ, minX, maxY, minZ,
+                                minX, maxY, maxZ, red, green, blue, alpha);
+                case EAST -> keepChest$emitQuad(consumer, matrix, maxX, minY, maxZ, maxX, minY, minZ, maxX, maxY, maxZ,
+                                maxX, maxY, minZ, red, green, blue, alpha);
                 }
         }
 

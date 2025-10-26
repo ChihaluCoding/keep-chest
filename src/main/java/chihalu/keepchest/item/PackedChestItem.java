@@ -191,18 +191,24 @@ public class PackedChestItem extends Item {
                                 alternatePlacementContext = offsetPlacementContext(placementContext, alternatePrimaryPos);
                         }
 
-                        if (alternatePlacementContext != null) {
+                        if (shouldShift) {
+                                if (alternatePlacementContext == null) {
+                                        return Optional.empty();
+                                }
+
                                 boolean alternateValid = canPlace(world, alternatePlacementContext, alternatePrimaryPos,
                                                 primaryState);
-                                if (shouldShift) {
-                                        if (alternateValid) {
-                                                primaryPos = alternatePrimaryPos;
-                                                primaryPlacementContext = alternatePlacementContext;
-                                                defaultPlacementValid = alternateValid;
-                                        } else if (!defaultPlacementValid) {
-                                                return Optional.empty();
-                                        }
-                                } else if (!defaultPlacementValid && alternateValid) {
+                                if (!alternateValid) {
+                                        return Optional.empty();
+                                }
+
+                                primaryPos = alternatePrimaryPos;
+                                primaryPlacementContext = alternatePlacementContext;
+                                defaultPlacementValid = alternateValid;
+                        } else if (alternatePlacementContext != null) {
+                                boolean alternateValid = canPlace(world, alternatePlacementContext, alternatePrimaryPos,
+                                                primaryState);
+                                if (!defaultPlacementValid && alternateValid) {
                                         primaryPos = alternatePrimaryPos;
                                         primaryPlacementContext = alternatePlacementContext;
                                         defaultPlacementValid = alternateValid;

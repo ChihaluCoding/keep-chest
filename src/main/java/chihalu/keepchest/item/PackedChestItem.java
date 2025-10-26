@@ -60,6 +60,11 @@ public class PackedChestItem extends Item {
                 super(settings);
         }
 
+        @Override
+        public boolean hasGlint(ItemStack stack) {
+                return true;
+        }
+
         public static Optional<PackResult> pack(ServerWorld world, BlockPos pos, BlockState state,
                         BlockEntity blockEntity) {
                 ItemStack stack = new ItemStack(KeepChestItems.PACKED_CHEST);

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import chihalu.keepchest.KeepChest;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
@@ -24,8 +26,9 @@ public final class KeepChestItems {
                 for (PackedContainerType type : PackedContainerType.values()) {
                         RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(KeepChest.MOD_ID, type.itemId()));
                         PACKED_CONTAINER_KEYS.put(type, key);
-                        PACKED_CONTAINERS.put(type,
-                                        new PackedChestItem(type, new Item.Settings().registryKey(key).maxCount(1)));
+                        Block defaultBlock = resolveDefaultBlock(type);
+                        PACKED_CONTAINERS.put(type, new PackedChestItem(type, defaultBlock,
+                                        new Item.Settings().registryKey(key).maxCount(1)));
                 }
         }
 
@@ -54,5 +57,13 @@ public final class KeepChestItems {
                 }
 
                 return null;
+        }
+
+        private static Block resolveDefaultBlock(PackedContainerType type) {
+                return switch (type) {
+                case CHEST, LARGE_CHEST -> Blocks.CHEST;
+                case COPPER_CHEST -> Blocks.COPPER_CHEST;
+                case BARREL -> Blocks.BARREL;
+                };
         }
 }

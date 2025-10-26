@@ -22,7 +22,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.TypedEntityData;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -50,7 +50,7 @@ import net.minecraft.world.World;
 /**
  * Item that stores the contents of a chest and can recreate it later.
  */
-public class PackedChestItem extends Item {
+public class PackedChestItem extends BlockItem {
         private static final String PRIMARY_STATE_KEY = "PrimaryState";
         private static final String SECONDARY_STATE_KEY = "SecondaryState";
         private static final String SECONDARY_BLOCK_ENTITY_KEY = "SecondaryBlockEntity";
@@ -59,8 +59,8 @@ public class PackedChestItem extends Item {
 
         private final PackedContainerType type;
 
-        public PackedChestItem(PackedContainerType type, Settings settings) {
-                super(settings);
+        public PackedChestItem(PackedContainerType type, Block block, Settings settings) {
+                super(block, settings);
                 this.type = type;
         }
 

@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "keep-chest:item/packed_large_chest"
-  }
+  "parent": "minecraft:item/chest"
 }

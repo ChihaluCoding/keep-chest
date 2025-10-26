@@ -37,8 +37,10 @@ import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -164,10 +166,10 @@ public class PackedChestItem extends Item {
                         primaryState = primaryState.with(ChestBlock.FACING, desiredFacing);
                 }
 
-                BlockPos primaryPos = placementContext.getBlockPos();
-                if (!canPlace(world, primaryPos, placementContext, primaryState)) {
-                        return Optional.empty();
-                }
+                BlockPos requestedPos = placementContext.getBlockPos();
+                BlockPos primaryPos = requestedPos;
+                ItemPlacementContext primaryPlacementContext = placementContext;
+                boolean defaultPlacementValid = canPlace(world, primaryPlacementContext, primaryPos, primaryState);
 
                 boolean isDouble = keepChestData.getBoolean(DOUBLE_KEY).orElse(false);
                 BlockPos secondaryPos = null;
@@ -176,6 +178,38 @@ public class PackedChestItem extends Item {
 
                 if (isDouble) {
                         if (!keepChestData.contains(SECONDARY_STATE_KEY) || !keepChestData.contains(SECONDARY_BLOCK_ENTITY_KEY)) {
+                                return Optional.empty();
+                        }
+
+                        BlockPos offsetVector = findConnectedChestPos(BlockPos.ORIGIN, primaryState);
+                        boolean shouldShift = placementContext.getPlayer() != null && placementContext.getPlayer().isSneaking();
+                        ItemPlacementContext alternatePlacementContext = null;
+                        BlockPos alternatePrimaryPos = null;
+
+                        if (offsetVector != null && !offsetVector.equals(BlockPos.ORIGIN)) {
+                                alternatePrimaryPos = requestedPos.subtract(offsetVector);
+                                alternatePlacementContext = offsetPlacementContext(placementContext, alternatePrimaryPos);
+                        }
+
+                        if (alternatePlacementContext != null) {
+                                boolean alternateValid = canPlace(world, alternatePlacementContext, alternatePrimaryPos,
+                                                primaryState);
+                                if (shouldShift) {
+                                        if (alternateValid) {
+                                                primaryPos = alternatePrimaryPos;
+                                                primaryPlacementContext = alternatePlacementContext;
+                                                defaultPlacementValid = alternateValid;
+                                        } else if (!defaultPlacementValid) {
+                                                return Optional.empty();
+                                        }
+                                } else if (!defaultPlacementValid && alternateValid) {
+                                        primaryPos = alternatePrimaryPos;
+                                        primaryPlacementContext = alternatePlacementContext;
+                                        defaultPlacementValid = alternateValid;
+                                }
+                        }
+
+                        if (!defaultPlacementValid) {
                                 return Optional.empty();
                         }
 
@@ -190,13 +224,20 @@ public class PackedChestItem extends Item {
                                 secondaryState = secondaryState.with(ChestBlock.FACING, desiredFacing);
                         }
 
-                        if (!canPlace(world, secondaryPos, placementContext, secondaryState)) {
+                        ItemPlacementContext secondaryPlacementContext = offsetPlacementContext(primaryPlacementContext,
+                                        secondaryPos);
+                        if (!canPlace(world, secondaryPlacementContext, secondaryPos, secondaryState)) {
                                 return Optional.empty();
                         }
 
                         NbtCompound secondaryEntityNbt = keepChestData.getCompoundOrEmpty(SECONDARY_BLOCK_ENTITY_KEY);
                         BlockEntityType<?> secondaryType = resolveSecondaryType(keepChestData, secondaryState);
                         secondaryData = TypedEntityData.create(secondaryType, secondaryEntityNbt);
+                }
+
+                ItemPlacementContext finalPrimaryContext = offsetPlacementContext(primaryPlacementContext, primaryPos);
+                if (!canPlace(world, finalPrimaryContext, primaryPos, primaryState)) {
+                        return Optional.empty();
                 }
 
                 return Optional.of(new PlacementPlan(primaryPos, primaryState, primaryData, secondaryPos, secondaryState,
@@ -223,7 +264,7 @@ public class PackedChestItem extends Item {
                 return true;
         }
 
-        private static boolean canPlace(World world, BlockPos pos, ItemPlacementContext context, BlockState state) {
+        private static boolean canPlace(World world, ItemPlacementContext context, BlockPos pos, BlockState state) {
                 BlockState existing = world.getBlockState(pos);
                 if (!existing.canReplace(context) && !existing.isAir()) {
                         return false;
@@ -235,6 +276,20 @@ public class PackedChestItem extends Item {
 
                 PlayerEntity player = context.getPlayer();
                 return player == null || player.canPlaceOn(pos, context.getSide(), context.getStack());
+        }
+
+        private static ItemPlacementContext offsetPlacementContext(ItemPlacementContext context, BlockPos newBlockPos) {
+                if (context.getBlockPos().equals(newBlockPos)) {
+                        return context;
+                }
+
+                Vec3d originalHitPos = context.getHitPos();
+                Vec3d offset = Vec3d.of(newBlockPos.subtract(context.getBlockPos()));
+                Vec3d adjustedHitPos = originalHitPos.add(offset);
+                BlockHitResult hitResult = new BlockHitResult(adjustedHitPos, context.getSide(), newBlockPos,
+                                context.hitsInsideBlock());
+                return new ItemPlacementContext(context.getWorld(), context.getPlayer(), context.getHand(), context.getStack(),
+                                hitResult);
         }
 
         @Nullable

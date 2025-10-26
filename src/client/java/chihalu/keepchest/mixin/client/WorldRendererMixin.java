@@ -18,6 +18,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
@@ -115,5 +116,96 @@ abstract class WorldRendererMixin {
                         return VoxelShapes.fullCube();
                 }
                 return shape;
+        }
+
+        @Unique
+        private Direction keepChest$getFrontDirection(BlockState state) {
+                if (state == null) {
+                        return Direction.NORTH;
+                }
+
+                if (state.contains(ChestBlock.FACING)) {
+                        return state.get(ChestBlock.FACING);
+                }
+
+                if (state.contains(Properties.HORIZONTAL_FACING)) {
+                        return state.get(Properties.HORIZONTAL_FACING);
+                }
+
+                if (state.contains(Properties.FACING)) {
+                        return state.get(Properties.FACING);
+                }
+                return Direction.NORTH;
+        }
+
+        @Unique
+        private void keepChest$renderFilledPreview(MatrixStack matrices, double cameraX, double cameraY, double cameraZ) {
+                if (keepChest$previewData == null) {
+                        return;
+                }
+
+                MinecraftClient client = MinecraftClient.getInstance();
+                VertexConsumerProvider.Immediate consumers = client.getBufferBuilders().getEntityVertexConsumers();
+                Box worldBox = keepChest$previewData.box().expand(0.002);
+
+                float minX = (float) (worldBox.minX - cameraX);
+                float minY = (float) (worldBox.minY - cameraY);
+                float minZ = (float) (worldBox.minZ - cameraZ);
+                float maxX = (float) (worldBox.maxX - cameraX);
+                float maxY = (float) (worldBox.maxY - cameraY);
+                float maxZ = (float) (worldBox.maxZ - cameraZ);
+
+                Matrix4f matrix = matrices.peek().getPositionMatrix();
+                VertexConsumer consumer = consumers.getBuffer(RenderLayer.getDebugFilledBox());
+
+                Direction front = keepChest$previewData.frontDirection();
+
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.DOWN, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.UP, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.NORTH, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.SOUTH, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.WEST, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.EAST, front);
+
+                consumers.draw(RenderLayer.getDebugFilledBox());
+        }
+
+        @Unique
+        private void keepChest$drawFace(VertexConsumer consumer, Matrix4f matrix, float minX, float minY, float minZ,
+                        float maxX, float maxY, float maxZ, Direction face, Direction front) {
+                boolean isFront = face == front;
+                float alpha = isFront ? 0.5f : 0.35f;
+                float red = 0.0f;
+                float green = isFront ? 1.0f : 0.9f;
+                float blue = 0.0f;
+
+                switch (face) {
+                case DOWN -> keepChest$emitQuad(consumer, matrix, minX, minY, minZ, maxX, minY, minZ, minX, minY, maxZ,
+                                maxX, minY, maxZ, red, green, blue, alpha);
+                case UP -> keepChest$emitQuad(consumer, matrix, minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, minZ,
+                                maxX, maxY, maxZ, red, green, blue, alpha);
+                case NORTH -> keepChest$emitQuad(consumer, matrix, maxX, maxY, minZ, maxX, minY, minZ, minX, maxY, minZ,
+                                minX, minY, minZ, red, green, blue, alpha);
+                case SOUTH -> keepChest$emitQuad(consumer, matrix, minX, maxY, maxZ, minX, minY, maxZ, maxX, maxY, maxZ,
+                                maxX, minY, maxZ, red, green, blue, alpha);
+                case WEST -> keepChest$emitQuad(consumer, matrix, minX, minY, minZ, minX, minY, maxZ, minX, maxY, minZ,
+                                minX, maxY, maxZ, red, green, blue, alpha);
+                case EAST -> keepChest$emitQuad(consumer, matrix, maxX, minY, maxZ, maxX, minY, minZ, maxX, maxY, maxZ,
+                                maxX, maxY, minZ, red, green, blue, alpha);
+                }
+        }
+
+        @Unique
+        private void keepChest$emitQuad(VertexConsumer consumer, Matrix4f matrix, float x1, float y1, float z1, float x2,
+                        float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float r, float g,
+                        float b, float a) {
+                consumer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+                consumer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+                consumer.vertex(matrix, x3, y3, z3).color(r, g, b, a);
+                consumer.vertex(matrix, x4, y4, z4).color(r, g, b, a);
+        }
+
+        @Unique
+        private record OutlineRenderData(Box box, Direction frontDirection) {
         }
 }

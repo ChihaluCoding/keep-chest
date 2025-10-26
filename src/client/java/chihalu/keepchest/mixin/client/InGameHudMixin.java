@@ -22,6 +22,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.state.property.Properties;
 
 @Mixin(InGameHud.class)
 abstract class InGameHudMixin {
@@ -36,19 +37,15 @@ abstract class InGameHudMixin {
                 PackedChestItem.PlacementPreview placementPreview = preview.get();
                 BlockPos primaryPos = placementPreview.primaryPos();
                 BlockState primaryState = placementPreview.primaryState();
-                if (primaryPos == null || primaryState == null || !(primaryState.getBlock() instanceof ChestBlock)) {
+                if (primaryPos == null || primaryState == null) {
                         return;
                 }
 
-                if (!primaryState.contains(ChestBlock.FACING)) {
-                        return;
-                }
-
-                Direction facing = primaryState.get(ChestBlock.FACING);
+                Direction facing = keepChest$getPreviewFacing(primaryState);
                 List<Text> lines = new ArrayList<>();
                 lines.add(Text.translatable("hud.keep_chest.preview.facing", KeepChestClient.directionText(facing)));
 
-                if (placementPreview.isDouble()) {
+                if (placementPreview.isDouble() && primaryState.getBlock() instanceof ChestBlock) {
                         BlockPos secondaryPos = placementPreview.secondaryPos();
                         Direction extension = null;
                         if (secondaryPos != null) {
@@ -99,5 +96,25 @@ abstract class InGameHudMixin {
                         int y = startY + i * lineHeight;
                         context.drawTextWithShadow(textRenderer, line, x, y, 0xFFFFFF);
                 }
+        }
+
+        private Direction keepChest$getPreviewFacing(BlockState state) {
+                if (state == null) {
+                        return null;
+                }
+
+                if (state.contains(ChestBlock.FACING)) {
+                        return state.get(ChestBlock.FACING);
+                }
+
+                if (state.contains(Properties.HORIZONTAL_FACING)) {
+                        return state.get(Properties.HORIZONTAL_FACING);
+                }
+
+                if (state.contains(Properties.FACING)) {
+                        return state.get(Properties.FACING);
+                }
+
+                return null;
         }
 }

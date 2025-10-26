@@ -9,13 +9,17 @@ import chihalu.keepchest.item.KeepChestItems;
 import chihalu.keepchest.item.PackedChestItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.BarrelBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
@@ -47,15 +51,16 @@ public class KeepChest implements ModInitializer {
                                 return true;
                         }
 
-                        if (!(state.getBlock() instanceof ChestBlock)) {
+                        if (!(state.getBlock() instanceof ChestBlock) && !(state.getBlock() instanceof BarrelBlock)) {
                                 return true;
                         }
 
-                        if (!(blockEntity instanceof ChestBlockEntity chestBlockEntity)) {
+                        if (!(blockEntity instanceof ChestBlockEntity) && !(blockEntity instanceof BarrelBlockEntity)) {
                                 return true;
                         }
 
-                        Optional<PackedChestItem.PackResult> result = PackedChestItem.pack(serverWorld, pos, state, chestBlockEntity);
+                        Optional<PackedChestItem.PackResult> result = PackedChestItem.pack(serverWorld, pos, state,
+                                        (BlockEntity) blockEntity);
                         if (result.isEmpty()) {
                                 serverPlayer.sendMessage(Text.translatable("message.keep-chest.pack_failed"), true);
                                 return true;
@@ -69,7 +74,9 @@ public class KeepChest implements ModInitializer {
 
                         serverPlayer.incrementStat(Stats.MINED.getOrCreateStat(state.getBlock()));
                         serverPlayer.sendMessage(Text.translatable("message.keep-chest.packed"), true);
-                        world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.75f, 0.9f);
+                        SoundEvent sound = state.getBlock() instanceof BarrelBlock ? SoundEvents.BLOCK_BARREL_CLOSE
+                                        : SoundEvents.BLOCK_CHEST_CLOSE;
+                        world.playSound(null, pos, sound, SoundCategory.BLOCKS, 0.75f, 0.9f);
                         return false;
                 });
         }

@@ -6,15 +6,17 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.TrappedChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.TypedEntityData;
@@ -39,6 +41,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -57,40 +60,50 @@ public class PackedChestItem extends Item {
                 super(settings);
         }
 
-        public static Optional<PackResult> pack(ServerWorld world, BlockPos pos, BlockState state, ChestBlockEntity chest) {
+        public static Optional<PackResult> pack(ServerWorld world, BlockPos pos, BlockState state,
+                        BlockEntity blockEntity) {
                 ItemStack stack = new ItemStack(KeepChestItems.PACKED_CHEST);
 
-                TypedEntityData<BlockEntityType<?>> primaryData = TypedEntityData.create(
-                                chest.getType(), chest.createNbt(world.getRegistryManager()));
+                if (blockEntity == null) {
+                        return Optional.empty();
+                }
+
+                TypedEntityData<BlockEntityType<?>> primaryData = TypedEntityData.create(blockEntity.getType(),
+                                blockEntity.createNbt(world.getRegistryManager()));
                 stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, primaryData);
 
                 NbtCompound keepChestData = new NbtCompound();
                 keepChestData.put(PRIMARY_STATE_KEY, NbtHelper.fromBlockState(state));
 
                 BlockPos secondaryPos = null;
-                if (state.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
-                        secondaryPos = findConnectedChestPos(pos, state);
-                        if (secondaryPos == null) {
-                                return Optional.empty();
-                        }
+                if (state.getBlock() instanceof ChestBlock && state.contains(ChestBlock.CHEST_TYPE)
+                                && blockEntity instanceof ChestBlockEntity) {
+                        if (state.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
+                                secondaryPos = findConnectedChestPos(pos, state);
+                                if (secondaryPos == null) {
+                                        return Optional.empty();
+                                }
 
-                        BlockState secondaryState = world.getBlockState(secondaryPos);
-                        BlockEntity secondaryEntity = world.getBlockEntity(secondaryPos);
-                        if (!(secondaryState.getBlock() instanceof ChestBlock)
-                                        || !(secondaryEntity instanceof ChestBlockEntity secondaryChest)) {
-                                return Optional.empty();
-                        }
+                                BlockState secondaryState = world.getBlockState(secondaryPos);
+                                BlockEntity secondaryEntity = world.getBlockEntity(secondaryPos);
+                                if (!(secondaryState.getBlock() instanceof ChestBlock)
+                                                || !(secondaryEntity instanceof ChestBlockEntity secondaryChest)) {
+                                        return Optional.empty();
+                                }
 
-                        if (secondaryState.get(ChestBlock.CHEST_TYPE) == ChestType.SINGLE) {
-                                return Optional.empty();
-                        }
+                                if (!secondaryState.contains(ChestBlock.CHEST_TYPE)
+                                                || secondaryState.get(ChestBlock.CHEST_TYPE) == ChestType.SINGLE) {
+                                        return Optional.empty();
+                                }
 
-                        keepChestData.put(SECONDARY_STATE_KEY, NbtHelper.fromBlockState(secondaryState));
-                        keepChestData.put(SECONDARY_BLOCK_ENTITY_KEY, secondaryChest.createNbt(world.getRegistryManager()));
+                                keepChestData.put(SECONDARY_STATE_KEY, NbtHelper.fromBlockState(secondaryState));
+                                keepChestData.put(SECONDARY_BLOCK_ENTITY_KEY,
+                                                secondaryChest.createNbt(world.getRegistryManager()));
 
-                        Identifier secondaryTypeId = Registries.BLOCK_ENTITY_TYPE.getId(secondaryChest.getType());
-                        if (secondaryTypeId != null) {
-                                keepChestData.putString(SECONDARY_BLOCK_ENTITY_TYPE_KEY, secondaryTypeId.toString());
+                                Identifier secondaryTypeId = Registries.BLOCK_ENTITY_TYPE.getId(secondaryChest.getType());
+                                if (secondaryTypeId != null) {
+                                        keepChestData.putString(SECONDARY_BLOCK_ENTITY_TYPE_KEY, secondaryTypeId.toString());
+                                }
                         }
                 }
 
@@ -127,13 +140,13 @@ public class PackedChestItem extends Item {
                 }
 
                 PlacementPlan plan = placement.get();
-                if (!placeChest(world, plan.primaryPos(), plan.primaryState(), plan.primaryData())) {
+                if (!placeContainer(world, plan.primaryPos(), plan.primaryState(), plan.primaryData())) {
                         notifyPlacementFailure(context.getPlayer());
                         return ActionResult.FAIL;
                 }
 
                 if (plan.isDouble()) {
-                        placeChest(world, plan.secondaryPos(), plan.secondaryState(), plan.secondaryData());
+                        placeContainer(world, plan.secondaryPos(), plan.secondaryState(), plan.secondaryData());
                 }
 
                 PlayerEntity player = context.getPlayer();
@@ -159,12 +172,11 @@ public class PackedChestItem extends Item {
         private static Optional<PlacementPlan> preparePlacement(World world, ItemPlacementContext placementContext,
                         TypedEntityData<BlockEntityType<?>> primaryData, NbtCompound keepChestData) {
                 RegistryEntryLookup<Block> blockLookup = world.getRegistryManager().getOrThrow(RegistryKeys.BLOCK);
-                BlockState primaryState = NbtHelper.toBlockState(blockLookup, keepChestData.getCompoundOrEmpty(PRIMARY_STATE_KEY));
+                BlockState primaryState = NbtHelper.toBlockState(blockLookup,
+                                keepChestData.getCompoundOrEmpty(PRIMARY_STATE_KEY));
 
                 Direction desiredFacing = determineFacing(placementContext, primaryState);
-                if (primaryState.contains(ChestBlock.FACING)) {
-                        primaryState = primaryState.with(ChestBlock.FACING, desiredFacing);
-                }
+                primaryState = applyFacing(primaryState, desiredFacing);
 
                 BlockPos requestedPos = placementContext.getBlockPos();
                 BlockPos primaryPos = requestedPos;
@@ -226,9 +238,7 @@ public class PackedChestItem extends Item {
 
                         secondaryState = NbtHelper.toBlockState(blockLookup,
                                         keepChestData.getCompoundOrEmpty(SECONDARY_STATE_KEY));
-                        if (secondaryState.contains(ChestBlock.FACING)) {
-                                secondaryState = secondaryState.with(ChestBlock.FACING, desiredFacing);
-                        }
+                        secondaryState = applyFacing(secondaryState, desiredFacing);
 
                         ItemPlacementContext secondaryPlacementContext = offsetPlacementContext(primaryPlacementContext,
                                         secondaryPos);
@@ -250,22 +260,22 @@ public class PackedChestItem extends Item {
                                 secondaryData));
         }
 
-        private static boolean placeChest(World world, BlockPos pos, BlockState state,
+        private static boolean placeContainer(World world, BlockPos pos, BlockState state,
                         TypedEntityData<BlockEntityType<?>> entityData) {
                 if (!world.setBlockState(pos, state, Block.NOTIFY_ALL)) {
                         return false;
                 }
 
                 BlockEntity blockEntity = world.getBlockEntity(pos);
-                if (!(blockEntity instanceof ChestBlockEntity chestBlockEntity)) {
+                if (blockEntity == null) {
                         return false;
                 }
 
-                if (!entityData.applyToBlockEntity(chestBlockEntity, world.getRegistryManager())) {
+                if (!entityData.applyToBlockEntity(blockEntity, world.getRegistryManager())) {
                         return false;
                 }
 
-                chestBlockEntity.markDirty();
+                blockEntity.markDirty();
                 world.updateListeners(pos, state, state, Block.NOTIFY_ALL);
                 return true;
         }
@@ -398,7 +408,8 @@ public class PackedChestItem extends Item {
 
         private static void addContainerDrop(List<ItemStack> drops, BlockState state) {
                 Block block = state.getBlock();
-                if (!(block instanceof ChestBlock) && !(block instanceof TrappedChestBlock)) {
+                if (!(block instanceof ChestBlock) && !(block instanceof TrappedChestBlock)
+                                && !(block instanceof BarrelBlock)) {
                         block = Blocks.CHEST;
                 }
 
@@ -421,16 +432,16 @@ public class PackedChestItem extends Item {
                                                 : Blocks.CHEST.getDefaultState());
 
                 BlockEntity blockEntity = blockEntityType.instantiate(BlockPos.ORIGIN, state);
-                if (!(blockEntity instanceof ChestBlockEntity chestBlockEntity)) {
+                if (blockEntity == null || !(blockEntity instanceof Inventory inventory)) {
                         return;
                 }
 
-                if (!entityData.applyToBlockEntity(chestBlockEntity, registryLookup)) {
+                if (!entityData.applyToBlockEntity(blockEntity, registryLookup)) {
                         return;
                 }
 
-                for (int slot = 0; slot < chestBlockEntity.size(); slot++) {
-                        ItemStack stack = chestBlockEntity.getStack(slot);
+                for (int slot = 0; slot < inventory.size(); slot++) {
+                        ItemStack stack = inventory.getStack(slot);
                         if (!stack.isEmpty()) {
                                 contents.add(stack.copy());
                         }
@@ -458,11 +469,50 @@ public class PackedChestItem extends Item {
 
         private static Direction determineFacing(ItemUsageContext context, BlockState savedState) {
                 PlayerEntity player = context.getPlayer();
-                if (player != null) {
-                        return player.getHorizontalFacing().getOpposite();
+
+                if (savedState.getBlock() instanceof ChestBlock) {
+                        if (player != null) {
+                                return player.getHorizontalFacing().getOpposite();
+                        }
+
+                        return savedState.contains(ChestBlock.FACING) ? savedState.get(ChestBlock.FACING) : Direction.NORTH;
                 }
 
-                return savedState.contains(ChestBlock.FACING) ? savedState.get(ChestBlock.FACING) : Direction.NORTH;
+                if (savedState.contains(Properties.FACING)) {
+                        return savedState.get(Properties.FACING);
+                }
+
+                if (savedState.contains(Properties.HORIZONTAL_FACING)) {
+                        if (player != null) {
+                                return player.getHorizontalFacing().getOpposite();
+                        }
+
+                        return savedState.get(Properties.HORIZONTAL_FACING);
+                }
+
+                return Direction.NORTH;
+        }
+
+        private static BlockState applyFacing(BlockState state, Direction facing) {
+                if (facing == null) {
+                        return state;
+                }
+
+                if (state.contains(ChestBlock.FACING)) {
+                        Direction horizontal = facing.getAxis().isHorizontal() ? facing : Direction.NORTH;
+                        return state.with(ChestBlock.FACING, horizontal);
+                }
+
+                if (state.contains(Properties.HORIZONTAL_FACING)) {
+                        Direction horizontal = facing.getAxis().isHorizontal() ? facing : Direction.NORTH;
+                        return state.with(Properties.HORIZONTAL_FACING, horizontal);
+                }
+
+                if (state.contains(Properties.FACING)) {
+                        return state.with(Properties.FACING, facing);
+                }
+
+                return state;
         }
 
         private static BlockEntityType<?> resolveSecondaryType(NbtCompound keepChestData, BlockState secondaryState) {

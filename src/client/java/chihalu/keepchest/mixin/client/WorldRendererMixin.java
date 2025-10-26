@@ -1,7 +1,5 @@
 package chihalu.keepchest.mixin.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,16 +11,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import chihalu.keepchest.KeepChestClient;
 import chihalu.keepchest.item.PackedChestItem;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.util.math.Direction;
+import org.joml.Matrix4f;
 
 @Mixin(WorldRenderer.class)
 abstract class WorldRendererMixin {
@@ -31,6 +35,9 @@ abstract class WorldRendererMixin {
 
         @Unique
         private boolean keepChest$renderingPreview;
+
+        @Unique
+        private OutlineRenderData keepChest$previewData;
 
         @Inject(method = "drawBlockOutline", at = @At("TAIL"))
         private void keepChest$drawPackedChestPreview(MatrixStack matrices, VertexConsumer vertexConsumer,
@@ -43,6 +50,7 @@ abstract class WorldRendererMixin {
                 MinecraftClient client = MinecraftClient.getInstance();
                 Optional<PackedChestItem.PlacementPreview> preview = KeepChestClient.findPlacementPreview(client);
                 if (preview.isEmpty()) {
+                        keepChest$previewData = null;
                         return;
                 }
 
@@ -51,39 +59,36 @@ abstract class WorldRendererMixin {
                 if (player == null) {
                         return;
                 }
-                List<OutlineRenderState> previewStates = keepChest$createPreviewStates(outlineRenderState, player,
-                                client, placementPreview);
-                if (previewStates.isEmpty()) {
+                OutlineRenderState previewState = keepChest$createPreviewState(outlineRenderState, player, client,
+                                placementPreview);
+                if (previewState == null) {
                         return;
                 }
 
                 keepChest$renderingPreview = true;
                 try {
-                        WorldRendererInvoker renderer = (WorldRendererInvoker) (Object) this;
-                        for (OutlineRenderState previewState : previewStates) {
-                                renderer.keepChest$drawBlockOutline(matrices, vertexConsumer, cameraX, cameraY, cameraZ,
-                                                previewState, KEEP_CHEST_PREVIEW_COLOR);
-                        }
+                        ((WorldRendererInvoker) (Object) this).keepChest$drawBlockOutline(matrices, vertexConsumer,
+                                        cameraX, cameraY, cameraZ, previewState, KEEP_CHEST_PREVIEW_COLOR);
+                        keepChest$renderFilledPreview(matrices, cameraX, cameraY, cameraZ);
                 } finally {
                         keepChest$renderingPreview = false;
                 }
         }
 
         @Unique
-        private List<OutlineRenderState> keepChest$createPreviewStates(OutlineRenderState outlineRenderState,
+        private OutlineRenderState keepChest$createPreviewState(OutlineRenderState outlineRenderState,
                         ClientPlayerEntity player, MinecraftClient client, PackedChestItem.PlacementPreview preview) {
+                keepChest$previewData = null;
                 BlockPos primaryPos = preview.primaryPos();
                 BlockState primaryState = preview.primaryState();
                 if (primaryPos == null || primaryState == null) {
-                        return List.of();
+                        return null;
                 }
 
-                boolean translucent = outlineRenderState.isTranslucent();
-                boolean highContrast = outlineRenderState.highContrast();
-
                 VoxelShape primaryShape = keepChest$getOutlineShape(client, player, primaryPos, primaryState);
-                List<OutlineRenderState> previewStates = new ArrayList<>();
-                previewStates.add(new OutlineRenderState(primaryPos, translucent, highContrast, primaryShape));
+                Box primaryWorldBox = primaryShape.getBoundingBox().offset(primaryPos);
+                Box combinedWorldBox = primaryWorldBox;
+                BlockPos basePos = primaryPos;
 
                 if (preview.isDouble()) {
                         BlockPos secondaryPos = preview.secondaryPos();
@@ -91,12 +96,29 @@ abstract class WorldRendererMixin {
                         if (secondaryPos != null && secondaryState != null) {
                                 VoxelShape secondaryShape = keepChest$getOutlineShape(client, player, secondaryPos,
                                                 secondaryState);
-                                previewStates.add(new OutlineRenderState(secondaryPos, translucent, highContrast,
-                                                secondaryShape));
+                                Box secondaryWorldBox = secondaryShape.getBoundingBox().offset(secondaryPos);
+                                combinedWorldBox = combinedWorldBox.union(secondaryWorldBox);
+
+                                int baseX = Math.min(primaryPos.getX(), secondaryPos.getX());
+                                int baseY = Math.min(primaryPos.getY(), secondaryPos.getY());
+                                int baseZ = Math.min(primaryPos.getZ(), secondaryPos.getZ());
+                                basePos = new BlockPos(baseX, baseY, baseZ);
                         }
                 }
 
-                return previewStates;
+                double relativeMinX = combinedWorldBox.minX - basePos.getX();
+                double relativeMinY = combinedWorldBox.minY - basePos.getY();
+                double relativeMinZ = combinedWorldBox.minZ - basePos.getZ();
+                double relativeMaxX = combinedWorldBox.maxX - basePos.getX();
+                double relativeMaxY = combinedWorldBox.maxY - basePos.getY();
+                double relativeMaxZ = combinedWorldBox.maxZ - basePos.getZ();
+                VoxelShape combinedShape = VoxelShapes.cuboid(relativeMinX, relativeMinY, relativeMinZ, relativeMaxX,
+                                relativeMaxY, relativeMaxZ);
+
+                Direction frontDirection = keepChest$getFrontDirection(preview.primaryState());
+                keepChest$previewData = new OutlineRenderData(combinedWorldBox, frontDirection);
+
+                return new OutlineRenderState(basePos, true, outlineRenderState.highContrast(), combinedShape);
         }
 
         @Unique
@@ -107,5 +129,95 @@ abstract class WorldRendererMixin {
                         return VoxelShapes.fullCube();
                 }
                 return shape;
+        }
+
+        @Unique
+        private Direction keepChest$getFrontDirection(BlockState state) {
+                if (state != null && state.getBlock() instanceof ChestBlock && state.contains(ChestBlock.FACING)) {
+                        return state.get(ChestBlock.FACING);
+                }
+                return Direction.NORTH;
+        }
+
+        @Unique
+        private void keepChest$renderFilledPreview(MatrixStack matrices, double cameraX, double cameraY, double cameraZ) {
+                if (keepChest$previewData == null) {
+                        return;
+                }
+
+                MinecraftClient client = MinecraftClient.getInstance();
+                VertexConsumerProvider.Immediate consumers = client.getBufferBuilders().getEntityVertexConsumers();
+                Box worldBox = keepChest$previewData.box().expand(0.002);
+
+                float minX = (float) (worldBox.minX - cameraX);
+                float minY = (float) (worldBox.minY - cameraY);
+                float minZ = (float) (worldBox.minZ - cameraZ);
+                float maxX = (float) (worldBox.maxX - cameraX);
+                float maxY = (float) (worldBox.maxY - cameraY);
+                float maxZ = (float) (worldBox.maxZ - cameraZ);
+
+                Matrix4f matrix = matrices.peek().getPositionMatrix();
+                VertexConsumer consumer = consumers.getBuffer(RenderLayer.getDebugFilledBox());
+
+                Direction front = keepChest$previewData.frontDirection();
+
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.DOWN, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.UP, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.NORTH, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.SOUTH, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.WEST, front);
+                keepChest$drawFace(consumer, matrix, minX, minY, minZ, maxX, maxY, maxZ, Direction.EAST, front);
+
+                consumers.draw(RenderLayer.getDebugFilledBox());
+        }
+
+        @Unique
+        private void keepChest$drawFace(VertexConsumer consumer, Matrix4f matrix, float minX, float minY, float minZ,
+                        float maxX, float maxY, float maxZ, Direction face, Direction front) {
+                float alpha = face == front ? 0.5f : 0.35f;
+                float red = face == front ? 0.0f : 0.0f;
+                float green = face == front ? 0.4f : 0.9f;
+                float blue = face == front ? 1.0f : 0.0f;
+
+                switch (face) {
+                case DOWN -> {
+                        keepChest$emitQuad(consumer, matrix, minX, minY, minZ, maxX, minY, minZ, maxX, minY, maxZ, minX,
+                                        minY, maxZ, red, green, blue, alpha);
+                }
+                case UP -> {
+                        keepChest$emitQuad(consumer, matrix, minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, maxZ, maxX,
+                                        maxY, minZ, red, green, blue, alpha);
+                }
+                case NORTH -> {
+                        keepChest$emitQuad(consumer, matrix, minX, minY, minZ, minX, maxY, minZ, maxX, maxY, minZ, maxX,
+                                        minY, minZ, red, green, blue, alpha);
+                }
+                case SOUTH -> {
+                        keepChest$emitQuad(consumer, matrix, minX, minY, maxZ, maxX, minY, maxZ, maxX, maxY, maxZ, minX,
+                                        maxY, maxZ, red, green, blue, alpha);
+                }
+                case WEST -> {
+                        keepChest$emitQuad(consumer, matrix, minX, minY, minZ, minX, minY, maxZ, minX, maxY, maxZ, minX,
+                                        maxY, minZ, red, green, blue, alpha);
+                }
+                case EAST -> {
+                        keepChest$emitQuad(consumer, matrix, maxX, minY, minZ, maxX, maxY, minZ, maxX, maxY, maxZ, maxX,
+                                        minY, maxZ, red, green, blue, alpha);
+                }
+                }
+        }
+
+        @Unique
+        private void keepChest$emitQuad(VertexConsumer consumer, Matrix4f matrix, float x1, float y1, float z1, float x2,
+                        float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float r, float g,
+                        float b, float a) {
+                consumer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+                consumer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+                consumer.vertex(matrix, x3, y3, z3).color(r, g, b, a);
+                consumer.vertex(matrix, x4, y4, z4).color(r, g, b, a);
+        }
+
+        @Unique
+        private record OutlineRenderData(Box box, Direction frontDirection) {
         }
 }

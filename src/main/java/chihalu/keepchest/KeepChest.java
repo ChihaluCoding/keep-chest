@@ -9,9 +9,9 @@ import chihalu.keepchest.item.KeepChestItems;
 import chihalu.keepchest.item.PackedChestItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.AbstractChestBlock;
 import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -51,7 +51,7 @@ public class KeepChest implements ModInitializer {
                                 return true;
                         }
 
-                        if (!(state.getBlock() instanceof ChestBlock) && !(state.getBlock() instanceof BarrelBlock)) {
+                        if (!(state.getBlock() instanceof AbstractChestBlock) && !(state.getBlock() instanceof BarrelBlock)) {
                                 return true;
                         }
 
@@ -74,7 +74,8 @@ public class KeepChest implements ModInitializer {
 
                         serverPlayer.incrementStat(Stats.MINED.getOrCreateStat(state.getBlock()));
                         serverPlayer.sendMessage(
-                                        Text.translatable("message.keep-chest.packed", state.getBlock().getName()),
+                                        Text.translatable("message.keep-chest.packed",
+                                                        packResult.containerType().displayName()),
                                         true);
                         SoundEvent sound = state.getBlock() instanceof BarrelBlock ? SoundEvents.BLOCK_BARREL_CLOSE
                                         : SoundEvents.BLOCK_CHEST_CLOSE;

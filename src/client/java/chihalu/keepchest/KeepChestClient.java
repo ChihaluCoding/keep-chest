@@ -23,12 +23,12 @@ public class KeepChestClient implements ClientModInitializer {
 
         public static Optional<HeldPackedChest> findHeldPackedChest(ClientPlayerEntity player) {
                 ItemStack main = player.getMainHandStack();
-                if (main.isOf(KeepChestItems.PACKED_CHEST)) {
+                if (KeepChestItems.isPackedContainer(main)) {
                         return Optional.of(new HeldPackedChest(main, Hand.MAIN_HAND));
                 }
 
                 ItemStack offHand = player.getOffHandStack();
-                if (offHand.isOf(KeepChestItems.PACKED_CHEST)) {
+                if (KeepChestItems.isPackedContainer(offHand)) {
                         return Optional.of(new HeldPackedChest(offHand, Hand.OFF_HAND));
                 }
 

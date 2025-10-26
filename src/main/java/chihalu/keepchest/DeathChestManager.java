@@ -31,7 +31,7 @@ public final class DeathChestManager {
 
                 for (int slot = 0; slot < inventory.size(); slot++) {
                         ItemStack stack = inventory.getStack(slot);
-                        if (stack.isEmpty() || !stack.isOf(KeepChestItems.PACKED_CHEST)) {
+                        if (stack.isEmpty() || !KeepChestItems.isPackedContainer(stack)) {
                                 continue;
                         }
 

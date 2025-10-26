@@ -1,8 +1,11 @@
 {
   "item.keep-chest.packed_chest": "Packed Chest",
+  "item.keep-chest.packed_large_chest": "Packed Large Chest",
+  "item.keep-chest.packed_copper_chest": "Packed Copper Chest",
+  "item.keep-chest.packed_barrel": "Packed Barrel",
   "message.keep-chest.pack_failed": "Could not pack this container.",
   "message.keep-chest.packed": "Packed %s into your inventory.",
-  "message.keep-chest.unpacked": "Container restored at %1$s, %2$s, %3$s.",
+  "message.keep-chest.unpacked": "%1$s placed at %2$s, %3$s, %4$s.",
   "message.keep-chest.unpack_failed": "Failed to place the packed container.",
   "text.keep-chest.death_chest_placed": "Stored container contents at %1$s, %2$s, %3$s.",
   "hud.keep_chest.preview.facing": "Facing: %s",

@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.CopperChestBlock;
 import net.minecraft.block.TrappedChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -56,8 +57,15 @@ public class PackedChestItem extends Item {
         private static final String SECONDARY_BLOCK_ENTITY_TYPE_KEY = "SecondaryBlockEntityType";
         private static final String DOUBLE_KEY = "Double";
 
-        public PackedChestItem(Settings settings) {
+        private final PackedContainerType type;
+
+        public PackedChestItem(PackedContainerType type, Settings settings) {
                 super(settings);
+                this.type = type;
+        }
+
+        public PackedContainerType getContainerType() {
+                return this.type;
         }
 
         @Override
@@ -67,15 +75,12 @@ public class PackedChestItem extends Item {
 
         public static Optional<PackResult> pack(ServerWorld world, BlockPos pos, BlockState state,
                         BlockEntity blockEntity) {
-                ItemStack stack = new ItemStack(KeepChestItems.PACKED_CHEST);
-
                 if (blockEntity == null) {
                         return Optional.empty();
                 }
 
                 TypedEntityData<BlockEntityType<?>> primaryData = TypedEntityData.create(blockEntity.getType(),
                                 blockEntity.createNbt(world.getRegistryManager()));
-                stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, primaryData);
 
                 NbtCompound keepChestData = new NbtCompound();
                 keepChestData.put(PRIMARY_STATE_KEY, NbtHelper.fromBlockState(state));
@@ -112,10 +117,29 @@ public class PackedChestItem extends Item {
                         }
                 }
 
-                keepChestData.putBoolean(DOUBLE_KEY, secondaryPos != null);
+                boolean isDouble = secondaryPos != null;
+                keepChestData.putBoolean(DOUBLE_KEY, isDouble);
+
+                PackedContainerType containerType = determineContainerType(state, isDouble);
+                ItemStack stack = KeepChestItems.createPackedContainerStack(containerType);
+                stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, primaryData);
                 stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(keepChestData));
 
-                return Optional.of(new PackResult(stack, secondaryPos));
+                return Optional.of(new PackResult(stack, containerType, secondaryPos));
+        }
+
+        private static PackedContainerType determineContainerType(BlockState state, boolean isDouble) {
+                Block block = state.getBlock();
+
+                if (block instanceof BarrelBlock) {
+                        return PackedContainerType.BARREL;
+                }
+
+                if (block instanceof CopperChestBlock) {
+                        return PackedContainerType.COPPER_CHEST;
+                }
+
+                return isDouble ? PackedContainerType.LARGE_CHEST : PackedContainerType.CHEST;
         }
 
         @Override
@@ -156,11 +180,11 @@ public class PackedChestItem extends Item {
 
                 PlayerEntity player = context.getPlayer();
                 if (player instanceof ServerPlayerEntity serverPlayer) {
+                        PackedContainerType containerType = determineContainerType(plan.primaryState(), plan.isDouble());
                         serverPlayer.incrementStat(Stats.USED.getOrCreateStat(this));
-                        serverPlayer.sendMessage(
-                                        Text.translatable("message.keep-chest.unpacked", plan.primaryPos().getX(),
-                                                        plan.primaryPos().getY(), plan.primaryPos().getZ()),
-                                        true);
+                        serverPlayer.sendMessage(Text.translatable("message.keep-chest.unpacked",
+                                        containerType.displayName(), plan.primaryPos().getX(), plan.primaryPos().getY(),
+                                        plan.primaryPos().getZ()), true);
                 }
 
                 stack.decrement(1);
@@ -330,7 +354,7 @@ public class PackedChestItem extends Item {
                 return pos.offset(offset);
         }
 
-        public record PackResult(ItemStack stack, @Nullable BlockPos secondaryPos) {
+        public record PackResult(ItemStack stack, PackedContainerType containerType, @Nullable BlockPos secondaryPos) {
         }
 
         public record PlacementPreview(BlockPos primaryPos, BlockState primaryState, @Nullable BlockPos secondaryPos,
@@ -414,7 +438,7 @@ public class PackedChestItem extends Item {
         private static void addContainerDrop(List<ItemStack> drops, BlockState state) {
                 Block block = state.getBlock();
                 if (!(block instanceof ChestBlock) && !(block instanceof TrappedChestBlock)
-                                && !(block instanceof BarrelBlock)) {
+                                && !(block instanceof BarrelBlock) && !(block instanceof CopperChestBlock)) {
                         block = Blocks.CHEST;
                 }
 
@@ -475,7 +499,7 @@ public class PackedChestItem extends Item {
         private static Direction determineFacing(ItemUsageContext context, BlockState savedState) {
                 PlayerEntity player = context.getPlayer();
 
-                if (savedState.getBlock() instanceof ChestBlock) {
+                if (savedState.getBlock() instanceof ChestBlock || savedState.getBlock() instanceof CopperChestBlock) {
                         if (player != null) {
                                 return player.getHorizontalFacing().getOpposite();
                         }

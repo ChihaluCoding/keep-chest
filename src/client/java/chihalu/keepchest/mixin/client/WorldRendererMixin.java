@@ -11,18 +11,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import chihalu.keepchest.KeepChestClient;
 import chihalu.keepchest.item.PackedChestItem;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
+import org.joml.Matrix4f;
 
 @Mixin(WorldRenderer.class)
 abstract class WorldRendererMixin {
@@ -32,10 +37,14 @@ abstract class WorldRendererMixin {
         @Unique
         private boolean keepChest$renderingPreview;
 
+        @Unique
+        private OutlineRenderData keepChest$previewData;
+
         @Inject(method = "drawBlockOutline", at = @At("TAIL"))
         private void keepChest$drawPackedChestPreview(MatrixStack matrices, VertexConsumer vertexConsumer,
                         double cameraX, double cameraY, double cameraZ, OutlineRenderState outlineRenderState, int color,
                         CallbackInfo ci) {
+                keepChest$previewData = null;
                 if (keepChest$renderingPreview) {
                         return;
                 }
@@ -64,6 +73,8 @@ abstract class WorldRendererMixin {
                 } finally {
                         keepChest$renderingPreview = false;
                 }
+
+                keepChest$renderFilledPreview(matrices, cameraX, cameraY, cameraZ);
         }
 
         @Unique
@@ -104,6 +115,8 @@ abstract class WorldRendererMixin {
                 double relativeMaxZ = combinedWorldBox.maxZ - basePos.getZ();
                 VoxelShape combinedShape = VoxelShapes.cuboid(relativeMinX, relativeMinY, relativeMinZ, relativeMaxX,
                                 relativeMaxY, relativeMaxZ);
+
+                keepChest$previewData = new OutlineRenderData(combinedWorldBox, keepChest$getFrontDirection(primaryState));
 
                 return new OutlineRenderState(basePos, true, outlineRenderState.highContrast(), combinedShape);
         }

@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "成功打包了箱子。",
         "message.keep-chest.pack_failed": "无法打包此箱子。",
         "message.keep-chest.unpack_failed": "没有足够的空间来展开箱子。",
-        "message.keep-chest.unpacked": "箱子已在 %s, %s, %s 处展开。"
+        "message.keep-chest.unpacked": "箱子已在 %s, %s, %s 处展开。",
+        "hud.keep_chest.preview.facing": "朝向：%s",
+        "hud.keep_chest.preview.secondary": "第二部分：%s",
+        "hud.keep_chest.preview.half.left": "半部分：左侧",
+        "hud.keep_chest.preview.half.right": "半部分：右侧",
+        "hud.keep_chest.preview.unknown": "未知",
+        "hud.keep_chest.direction.north": "北",
+        "hud.keep_chest.direction.south": "南",
+        "hud.keep_chest.direction.east": "东",
+        "hud.keep_chest.direction.west": "西",
+        "hud.keep_chest.direction.up": "上",
+        "hud.keep_chest.direction.down": "下"
 }

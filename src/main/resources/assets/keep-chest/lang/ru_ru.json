@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "Сундук упакован.",
         "message.keep-chest.pack_failed": "Не удалось упаковать этот сундук.",
         "message.keep-chest.unpack_failed": "Недостаточно места для распаковки сундука.",
-        "message.keep-chest.unpacked": "Сундук распакован по координатам %s, %s, %s."
+        "message.keep-chest.unpacked": "Сундук распакован по координатам %s, %s, %s.",
+        "hud.keep_chest.preview.facing": "Направление: %s",
+        "hud.keep_chest.preview.secondary": "Вторая часть: %s",
+        "hud.keep_chest.preview.half.left": "Половина: левая",
+        "hud.keep_chest.preview.half.right": "Половина: правая",
+        "hud.keep_chest.preview.unknown": "Неизвестно",
+        "hud.keep_chest.direction.north": "Север",
+        "hud.keep_chest.direction.south": "Юг",
+        "hud.keep_chest.direction.east": "Восток",
+        "hud.keep_chest.direction.west": "Запад",
+        "hud.keep_chest.direction.up": "Вверх",
+        "hud.keep_chest.direction.down": "Вниз"
 }

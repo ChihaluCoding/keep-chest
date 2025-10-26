@@ -18,9 +18,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
@@ -43,32 +40,16 @@ abstract class WorldRendererMixin {
                 }
 
                 MinecraftClient client = MinecraftClient.getInstance();
-                ClientPlayerEntity player = client.player;
-                if (player == null || client.world == null) {
-                        return;
-                }
-
-                HitResult hitResult = client.crosshairTarget;
-                if (!(hitResult instanceof BlockHitResult blockHit)) {
-                        return;
-                }
-
-                Optional<KeepChestClient.HeldPackedChest> held = KeepChestClient.findHeldPackedChest(player);
-                if (held.isEmpty()) {
-                        return;
-                }
-
-                KeepChestClient.HeldPackedChest handStack = held.get();
-                ItemPlacementContext placementContext = new ItemPlacementContext(player, handStack.hand(),
-                                handStack.stack(), blockHit);
-
-                Optional<PackedChestItem.PlacementPreview> preview = PackedChestItem
-                                .getPlacementPreview(client.world, placementContext, handStack.stack());
+                Optional<PackedChestItem.PlacementPreview> preview = KeepChestClient.findPlacementPreview(client);
                 if (preview.isEmpty()) {
                         return;
                 }
 
                 PackedChestItem.PlacementPreview placementPreview = preview.get();
+                ClientPlayerEntity player = client.player;
+                if (player == null) {
+                        return;
+                }
                 OutlineRenderState previewState = keepChest$createPreviewState(outlineRenderState, player, client,
                                 placementPreview);
                 if (previewState == null) {

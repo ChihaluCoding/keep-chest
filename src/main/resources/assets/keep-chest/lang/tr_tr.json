@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "Sandık paketlendi.",
         "message.keep-chest.pack_failed": "Bu sandık paketlenemedi.",
         "message.keep-chest.unpack_failed": "Sandığı açmak için yeterli alan yok.",
-        "message.keep-chest.unpacked": "Sandık %s, %s, %s konumunda açıldı."
+        "message.keep-chest.unpacked": "Sandık %s, %s, %s konumunda açıldı.",
+        "hud.keep_chest.preview.facing": "Yön: %s",
+        "hud.keep_chest.preview.secondary": "İkincil blok: %s",
+        "hud.keep_chest.preview.half.left": "Yarım: sol",
+        "hud.keep_chest.preview.half.right": "Yarım: sağ",
+        "hud.keep_chest.preview.unknown": "Bilinmiyor",
+        "hud.keep_chest.direction.north": "Kuzey",
+        "hud.keep_chest.direction.south": "Güney",
+        "hud.keep_chest.direction.east": "Doğu",
+        "hud.keep_chest.direction.west": "Batı",
+        "hud.keep_chest.direction.up": "Yukarı",
+        "hud.keep_chest.direction.down": "Aşağı"
 }

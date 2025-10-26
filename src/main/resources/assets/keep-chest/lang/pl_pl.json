@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "Skrzynia została spakowana.",
         "message.keep-chest.pack_failed": "Nie można spakować tej skrzyni.",
         "message.keep-chest.unpack_failed": "Brakuje miejsca na rozpakowanie skrzyni.",
-        "message.keep-chest.unpacked": "Skrzynia została rozpakowana w %s, %s, %s."
+        "message.keep-chest.unpacked": "Skrzynia została rozpakowana w %s, %s, %s.",
+        "hud.keep_chest.preview.facing": "Kierunek: %s",
+        "hud.keep_chest.preview.secondary": "Druga część: %s",
+        "hud.keep_chest.preview.half.left": "Połówka: lewa",
+        "hud.keep_chest.preview.half.right": "Połówka: prawa",
+        "hud.keep_chest.preview.unknown": "Nieznany",
+        "hud.keep_chest.direction.north": "Północ",
+        "hud.keep_chest.direction.south": "Południe",
+        "hud.keep_chest.direction.east": "Wschód",
+        "hud.keep_chest.direction.west": "Zachód",
+        "hud.keep_chest.direction.up": "Góra",
+        "hud.keep_chest.direction.down": "Dół"
 }

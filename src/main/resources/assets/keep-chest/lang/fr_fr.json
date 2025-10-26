@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "Coffre empaqueté avec succès.",
         "message.keep-chest.pack_failed": "Impossible d'empaqueter ce coffre.",
         "message.keep-chest.unpack_failed": "Il n'y a pas assez de place pour déballer le coffre.",
-        "message.keep-chest.unpacked": "Coffre déballé en %s, %s, %s."
+        "message.keep-chest.unpacked": "Coffre déballé en %s, %s, %s.",
+        "hud.keep_chest.preview.facing": "Orientation : %s",
+        "hud.keep_chest.preview.secondary": "Extension : %s",
+        "hud.keep_chest.preview.half.left": "Moitié : gauche",
+        "hud.keep_chest.preview.half.right": "Moitié : droite",
+        "hud.keep_chest.preview.unknown": "Inconnue",
+        "hud.keep_chest.direction.north": "Nord",
+        "hud.keep_chest.direction.south": "Sud",
+        "hud.keep_chest.direction.east": "Est",
+        "hud.keep_chest.direction.west": "Ouest",
+        "hud.keep_chest.direction.up": "Haut",
+        "hud.keep_chest.direction.down": "Bas"
 }

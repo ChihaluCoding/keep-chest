@@ -4,5 +4,16 @@
   "message.keep-chest.packed": "チェストを収納しました。",
   "message.keep-chest.unpacked": "チェストを %1$s, %2$s, %3$s に再設置しました。",
   "message.keep-chest.unpack_failed": "収納チェストの設置に失敗しました。",
-  "text.keep-chest.death_chest_placed": "収納チェストの中身を %1$s, %2$s, %3$s に設置したチェストへ保管しました。"
+  "text.keep-chest.death_chest_placed": "収納チェストの中身を %1$s, %2$s, %3$s に設置したチェストへ保管しました。",
+  "hud.keep_chest.preview.facing": "向き: %s",
+  "hud.keep_chest.preview.secondary": "連結方向: %s",
+  "hud.keep_chest.preview.half.left": "配置側: 左",
+  "hud.keep_chest.preview.half.right": "配置側: 右",
+  "hud.keep_chest.preview.unknown": "不明",
+  "hud.keep_chest.direction.north": "北",
+  "hud.keep_chest.direction.south": "南",
+  "hud.keep_chest.direction.east": "東",
+  "hud.keep_chest.direction.west": "西",
+  "hud.keep_chest.direction.up": "上",
+  "hud.keep_chest.direction.down": "下"
 }

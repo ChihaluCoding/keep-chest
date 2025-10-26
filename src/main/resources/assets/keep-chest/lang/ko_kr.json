@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "상자를 포장했습니다.",
         "message.keep-chest.pack_failed": "이 상자는 포장할 수 없습니다.",
         "message.keep-chest.unpack_failed": "상자를 펼칠 공간이 부족합니다.",
-        "message.keep-chest.unpacked": "상자를 %s, %s, %s 위치에 펼쳤습니다."
+        "message.keep-chest.unpacked": "상자를 %s, %s, %s 위치에 펼쳤습니다.",
+        "hud.keep_chest.preview.facing": "방향: %s",
+        "hud.keep_chest.preview.secondary": "연결 방향: %s",
+        "hud.keep_chest.preview.half.left": "배치 면: 왼쪽",
+        "hud.keep_chest.preview.half.right": "배치 면: 오른쪽",
+        "hud.keep_chest.preview.unknown": "알 수 없음",
+        "hud.keep_chest.direction.north": "북",
+        "hud.keep_chest.direction.south": "남",
+        "hud.keep_chest.direction.east": "동",
+        "hud.keep_chest.direction.west": "서",
+        "hud.keep_chest.direction.up": "위",
+        "hud.keep_chest.direction.down": "아래"
 }

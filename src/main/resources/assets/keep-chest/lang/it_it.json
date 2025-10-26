@@ -6,5 +6,16 @@
         "message.keep-chest.packed": "Baule compattato con successo.",
         "message.keep-chest.pack_failed": "Impossibile compattare questo baule.",
         "message.keep-chest.unpack_failed": "Non c'è abbastanza spazio per aprire il baule.",
-        "message.keep-chest.unpacked": "Baule aperto a %s, %s, %s."
+        "message.keep-chest.unpacked": "Baule aperto a %s, %s, %s.",
+        "hud.keep_chest.preview.facing": "Direzione: %s",
+        "hud.keep_chest.preview.secondary": "Blocco secondario: %s",
+        "hud.keep_chest.preview.half.left": "Metà: sinistra",
+        "hud.keep_chest.preview.half.right": "Metà: destra",
+        "hud.keep_chest.preview.unknown": "Sconosciuto",
+        "hud.keep_chest.direction.north": "Nord",
+        "hud.keep_chest.direction.south": "Sud",
+        "hud.keep_chest.direction.east": "Est",
+        "hud.keep_chest.direction.west": "Ovest",
+        "hud.keep_chest.direction.up": "Su",
+        "hud.keep_chest.direction.down": "Giù"
 }

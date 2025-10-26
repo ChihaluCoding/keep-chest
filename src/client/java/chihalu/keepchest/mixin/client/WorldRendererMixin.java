@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import chihalu.keepchest.KeepChestClient;
 import chihalu.keepchest.item.PackedChestItem;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -20,19 +21,23 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
 @Mixin(WorldRenderer.class)
 abstract class WorldRendererMixin {
         @Unique
-        private boolean keepChest$renderingSecondaryOutline;
+        private static final int KEEP_CHEST_PREVIEW_COLOR = 0x7850FF78;
+
+        @Unique
+        private boolean keepChest$renderingPreview;
 
         @Inject(method = "drawBlockOutline", at = @At("TAIL"))
         private void keepChest$drawPackedChestPreview(MatrixStack matrices, VertexConsumer vertexConsumer,
                         double cameraX, double cameraY, double cameraZ, OutlineRenderState outlineRenderState, int color,
                         CallbackInfo ci) {
-                if (keepChest$renderingSecondaryOutline) {
+                if (keepChest$renderingPreview) {
                         return;
                 }
 
@@ -63,26 +68,38 @@ abstract class WorldRendererMixin {
                 }
 
                 PackedChestItem.PlacementPreview placementPreview = preview.get();
-                if (!placementPreview.isDouble() || placementPreview.secondaryPos() == null
-                                || placementPreview.secondaryState() == null) {
+                keepChest$renderPreviewForBlock(matrices, vertexConsumer, cameraX, cameraY, cameraZ, outlineRenderState,
+                                player, client, placementPreview.primaryPos(), placementPreview.primaryState());
+
+                if (placementPreview.isDouble()) {
+                        keepChest$renderPreviewForBlock(matrices, vertexConsumer, cameraX, cameraY, cameraZ,
+                                        outlineRenderState, player, client, placementPreview.secondaryPos(),
+                                        placementPreview.secondaryState());
+                }
+        }
+
+        @Unique
+        private void keepChest$renderPreviewForBlock(MatrixStack matrices, VertexConsumer vertexConsumer,
+                        double cameraX, double cameraY, double cameraZ, OutlineRenderState outlineRenderState,
+                        ClientPlayerEntity player, MinecraftClient client, BlockPos pos, BlockState state) {
+                if (pos == null || state == null) {
                         return;
                 }
 
-                VoxelShape shape = placementPreview.secondaryState().getOutlineShape(client.world,
-                                placementPreview.secondaryPos(), ShapeContext.of(player));
+                VoxelShape shape = state.getOutlineShape(client.world, pos, ShapeContext.of(player));
                 if (shape.isEmpty()) {
                         shape = VoxelShapes.fullCube();
                 }
 
-                OutlineRenderState secondaryState = new OutlineRenderState(placementPreview.secondaryPos(),
-                                outlineRenderState.isTranslucent(), outlineRenderState.highContrast(), shape);
+                OutlineRenderState previewState = new OutlineRenderState(pos, true, outlineRenderState.highContrast(),
+                                shape);
 
-                keepChest$renderingSecondaryOutline = true;
+                keepChest$renderingPreview = true;
                 try {
                         ((WorldRendererInvoker) (Object) this).keepChest$drawBlockOutline(matrices, vertexConsumer,
-                                        cameraX, cameraY, cameraZ, secondaryState, color);
+                                        cameraX, cameraY, cameraZ, previewState, KEEP_CHEST_PREVIEW_COLOR);
                 } finally {
-                        keepChest$renderingSecondaryOutline = false;
+                        keepChest$renderingPreview = false;
                 }
         }
 }

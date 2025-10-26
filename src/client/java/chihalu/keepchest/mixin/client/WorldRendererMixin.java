@@ -174,10 +174,11 @@ abstract class WorldRendererMixin {
         @Unique
         private void keepChest$drawFace(VertexConsumer consumer, Matrix4f matrix, float minX, float minY, float minZ,
                         float maxX, float maxY, float maxZ, Direction face, Direction front) {
-                float alpha = face == front ? 0.5f : 0.35f;
-                float red = face == front ? 0.0f : 0.0f;
-                float green = face == front ? 0.4f : 0.9f;
-                float blue = face == front ? 1.0f : 0.0f;
+                boolean isFront = face == front;
+                float alpha = isFront ? 0.5f : 0.35f;
+                float red = 0.0f;
+                float green = isFront ? 1.0f : 0.9f;
+                float blue = 0.0f;
 
                 switch (face) {
                 case DOWN -> keepChest$emitQuad(consumer, matrix, minX, minY, minZ, maxX, minY, minZ, minX, minY, maxZ,

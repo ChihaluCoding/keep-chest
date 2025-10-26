@@ -15,9 +15,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -25,7 +26,7 @@ import net.minecraft.util.math.Direction;
 @Mixin(InGameHud.class)
 abstract class InGameHudMixin {
         @Inject(method = "render", at = @At("TAIL"))
-        private void keepChest$renderPlacementOverlay(DrawContext context, float tickDelta, CallbackInfo ci) {
+        private void keepChest$renderPlacementOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
                 MinecraftClient client = MinecraftClient.getInstance();
                 Optional<PackedChestItem.PlacementPreview> preview = KeepChestClient.findPlacementPreview(client);
                 if (preview.isEmpty()) {

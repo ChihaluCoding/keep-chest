@@ -1,0 +1,626 @@
+Compiled from "InGameHud.java"
+public class net.minecraft.client.gui.hud.InGameHud {
+  public static final net.minecraft.util.Identifier NAUSEA_TEXTURE;
+
+  public float vignetteDarkness;
+
+  public net.minecraft.client.gui.hud.InGameHud(net.minecraft.client.MinecraftClient);
+    Code:
+       0: aload_0
+       1: invokespecial #160                // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: invokestatic  #166                // InterfaceMethod net/minecraft/util/math/random/Random.create:()Lnet/minecraft/util/math/random/Random;
+       8: putfield      #168                // Field random:Lnet/minecraft/util/math/random/Random;
+      11: aload_0
+      12: fconst_1
+      13: putfield      #170                // Field vignetteDarkness:F
+      16: aload_0
+      17: getstatic     #175                // Field net/minecraft/item/ItemStack.EMPTY:Lnet/minecraft/item/ItemStack;
+      20: putfield      #177                // Field currentStack:Lnet/minecraft/item/ItemStack;
+      23: aload_0
+      24: getstatic     #180                // Field net/minecraft/client/gui/hud/InGameHud$BarType.EMPTY:Lnet/minecraft/client/gui/hud/InGameHud$BarType;
+      27: getstatic     #185                // Field net/minecraft/client/gui/hud/bar/Bar.EMPTY:Lnet/minecraft/client/gui/hud/bar/Bar;
+      30: invokestatic  #191                // Method org/apache/commons/lang3/tuple/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/commons/lang3/tuple/Pair;
+      33: putfield      #193                // Field currentBar:Lorg/apache/commons/lang3/tuple/Pair;
+      36: aload_0
+      37: aload_1
+      38: putfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+      41: aload_0
+      42: new           #197                // class net/minecraft/client/gui/hud/DebugHud
+      45: dup
+      46: aload_1
+      47: invokespecial #199                // Method net/minecraft/client/gui/hud/DebugHud."<init>":(Lnet/minecraft/client/MinecraftClient;)V
+      50: putfield      #201                // Field debugHud:Lnet/minecraft/client/gui/hud/DebugHud;
+      53: aload_0
+      54: new           #203                // class net/minecraft/client/gui/hud/SpectatorHud
+      57: dup
+      58: aload_1
+      59: invokespecial #204                // Method net/minecraft/client/gui/hud/SpectatorHud."<init>":(Lnet/minecraft/client/MinecraftClient;)V
+      62: putfield      #206                // Field spectatorHud:Lnet/minecraft/client/gui/hud/SpectatorHud;
+      65: aload_0
+      66: new           #208                // class net/minecraft/client/gui/hud/ChatHud
+      69: dup
+      70: aload_1
+      71: invokespecial #209                // Method net/minecraft/client/gui/hud/ChatHud."<init>":(Lnet/minecraft/client/MinecraftClient;)V
+      74: putfield      #211                // Field chatHud:Lnet/minecraft/client/gui/hud/ChatHud;
+      77: aload_0
+      78: new           #213                // class net/minecraft/client/gui/hud/PlayerListHud
+      81: dup
+      82: aload_1
+      83: aload_0
+      84: invokespecial #216                // Method net/minecraft/client/gui/hud/PlayerListHud."<init>":(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/hud/InGameHud;)V
+      87: putfield      #218                // Field playerListHud:Lnet/minecraft/client/gui/hud/PlayerListHud;
+      90: aload_0
+      91: new           #220                // class net/minecraft/client/gui/hud/BossBarHud
+      94: dup
+      95: aload_1
+      96: invokespecial #221                // Method net/minecraft/client/gui/hud/BossBarHud."<init>":(Lnet/minecraft/client/MinecraftClient;)V
+      99: putfield      #223                // Field bossBarHud:Lnet/minecraft/client/gui/hud/BossBarHud;
+     102: aload_0
+     103: new           #225                // class net/minecraft/client/gui/hud/SubtitlesHud
+     106: dup
+     107: aload_1
+     108: invokespecial #226                // Method net/minecraft/client/gui/hud/SubtitlesHud."<init>":(Lnet/minecraft/client/MinecraftClient;)V
+     111: putfield      #228                // Field subtitlesHud:Lnet/minecraft/client/gui/hud/SubtitlesHud;
+     114: aload_0
+     115: getstatic     #180                // Field net/minecraft/client/gui/hud/InGameHud$BarType.EMPTY:Lnet/minecraft/client/gui/hud/InGameHud$BarType;
+     118: invokedynamic #247,  0            // InvokeDynamic #0:get:()Ljava/util/function/Supplier;
+     123: getstatic     #250                // Field net/minecraft/client/gui/hud/InGameHud$BarType.EXPERIENCE:Lnet/minecraft/client/gui/hud/InGameHud$BarType;
+     126: aload_1
+     127: invokedynamic #258,  0            // InvokeDynamic #1:get:(Lnet/minecraft/client/MinecraftClient;)Ljava/util/function/Supplier;
+     132: getstatic     #261                // Field net/minecraft/client/gui/hud/InGameHud$BarType.LOCATOR:Lnet/minecraft/client/gui/hud/InGameHud$BarType;
+     135: aload_1
+     136: invokedynamic #266,  0            // InvokeDynamic #2:get:(Lnet/minecraft/client/MinecraftClient;)Ljava/util/function/Supplier;
+     141: getstatic     #269                // Field net/minecraft/client/gui/hud/InGameHud$BarType.JUMPABLE_VEHICLE:Lnet/minecraft/client/gui/hud/InGameHud$BarType;
+     144: aload_1
+     145: invokedynamic #274,  0            // InvokeDynamic #3:get:(Lnet/minecraft/client/MinecraftClient;)Ljava/util/function/Supplier;
+     150: invokestatic  #279                // Method com/google/common/collect/ImmutableMap.of:(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap;
+     153: putfield      #281                // Field bars:Ljava/util/Map;
+     156: aload_0
+     157: invokevirtual #284                // Method setDefaultTitleFade:()V
+     160: return
+
+  public void setDefaultTitleFade();
+    Code:
+       0: aload_0
+       1: bipush        10
+       3: putfield      #288                // Field titleFadeInTicks:I
+       6: aload_0
+       7: bipush        70
+       9: putfield      #290                // Field titleStayTicks:I
+      12: aload_0
+      13: bipush        20
+      15: putfield      #292                // Field titleFadeOutTicks:I
+      18: return
+
+  public void render(net.minecraft.client.gui.DrawContext, net.minecraft.client.render.RenderTickCounter);
+    Code:
+       0: aload_0
+       1: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+       4: getfield      #302                // Field net/minecraft/client/MinecraftClient.currentScreen:Lnet/minecraft/client/gui/screen/Screen;
+       7: instanceof    #304                // class net/minecraft/client/gui/screen/world/LevelLoadingScreen
+      10: ifeq          14
+      13: return
+      14: aload_0
+      15: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+      18: getfield      #308                // Field net/minecraft/client/MinecraftClient.options:Lnet/minecraft/client/option/GameOptions;
+      21: getfield      #313                // Field net/minecraft/client/option/GameOptions.hudHidden:Z
+      24: ifne          61
+      27: aload_0
+      28: aload_1
+      29: aload_2
+      30: invokevirtual #316                // Method renderMiscOverlays:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      33: aload_0
+      34: aload_1
+      35: aload_2
+      36: invokevirtual #319                // Method renderCrosshair:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      39: aload_1
+      40: invokevirtual #324                // Method net/minecraft/client/gui/DrawContext.createNewRootLayer:()V
+      43: aload_0
+      44: aload_1
+      45: aload_2
+      46: invokevirtual #327                // Method renderMainHud:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      49: aload_0
+      50: aload_1
+      51: aload_2
+      52: invokevirtual #330                // Method renderStatusEffectOverlay:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      55: aload_0
+      56: aload_1
+      57: aload_2
+      58: invokevirtual #333                // Method renderBossBarHud:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      61: aload_0
+      62: aload_1
+      63: aload_2
+      64: invokevirtual #336                // Method renderSleepOverlay:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      67: aload_0
+      68: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+      71: getfield      #308                // Field net/minecraft/client/MinecraftClient.options:Lnet/minecraft/client/option/GameOptions;
+      74: getfield      #313                // Field net/minecraft/client/option/GameOptions.hudHidden:Z
+      77: ifne          152
+      80: aload_0
+      81: aload_1
+      82: aload_2
+      83: invokevirtual #339                // Method renderDemoTimer:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      86: aload_0
+      87: aload_1
+      88: aload_2
+      89: invokevirtual #342                // Method renderScoreboardSidebar:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      92: aload_0
+      93: aload_1
+      94: aload_2
+      95: invokevirtual #345                // Method renderOverlayMessage:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+      98: aload_0
+      99: aload_1
+     100: aload_2
+     101: invokevirtual #348                // Method renderTitleAndSubtitle:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+     104: aload_0
+     105: aload_1
+     106: aload_2
+     107: invokevirtual #351                // Method renderChat:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+     110: aload_0
+     111: aload_1
+     112: aload_2
+     113: invokevirtual #354                // Method renderPlayerList:(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V
+     116: aload_0
+     117: aload_1
+     118: aload_0
+     119: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+     122: getfield      #302                // Field net/minecraft/client/MinecraftClient.currentScreen:Lnet/minecraft/client/gui/screen/Screen;
+     125: ifnull        141
+     128: aload_0
+     129: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+     132: getfield      #302                // Field net/minecraft/client/MinecraftClient.currentScreen:Lnet/minecraft/client/gui/screen/Screen;
+     135: invokevirtual #360                // Method net/minecraft/client/gui/screen/Screen.deferSubtitles:()Z
+     138: ifeq          145
+     141: iconst_1
+     142: goto          146
+     145: iconst_0
+     146: invokevirtual #364                // Method renderSubtitlesHud:(Lnet/minecraft/client/gui/DrawContext;Z)V
+     149: goto          181
+     152: aload_0
+     153: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+     156: getfield      #302                // Field net/minecraft/client/MinecraftClient.currentScreen:Lnet/minecraft/client/gui/screen/Screen;
+     159: ifnull        181
+     162: aload_0
+     163: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+     166: getfield      #302                // Field net/minecraft/client/MinecraftClient.currentScreen:Lnet/minecraft/client/gui/screen/Screen;
+     169: invokevirtual #360                // Method net/minecraft/client/gui/screen/Screen.deferSubtitles:()Z
+     172: ifeq          181
+     175: aload_0
+     176: aload_1
+     177: iconst_1
+     178: invokevirtual #364                // Method renderSubtitlesHud:(Lnet/minecraft/client/gui/DrawContext;Z)V
+     181: return
+
+  public void renderDebugHud(net.minecraft.client.gui.DrawContext);
+    Code:
+       0: aload_0
+       1: getfield      #201                // Field debugHud:Lnet/minecraft/client/gui/hud/DebugHud;
+       4: aload_1
+       5: invokevirtual #371                // Method net/minecraft/client/gui/hud/DebugHud.render:(Lnet/minecraft/client/gui/DrawContext;)V
+       8: return
+
+  public void renderDeferredSubtitles();
+    Code:
+       0: aload_0
+       1: getfield      #383                // Field deferredSubtitleRenderer:Ljava/lang/Runnable;
+       4: ifnull        21
+       7: aload_0
+       8: getfield      #383                // Field deferredSubtitleRenderer:Ljava/lang/Runnable;
+      11: invokeinterface #389,  1          // InterfaceMethod java/lang/Runnable.run:()V
+      16: aload_0
+      17: aconst_null
+      18: putfield      #383                // Field deferredSubtitleRenderer:Ljava/lang/Runnable;
+      21: return
+
+  public static net.minecraft.util.Identifier getEffectTexture(net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.effect.StatusEffect>);
+    Code:
+       0: aload_0
+       1: invokeinterface #1019,  1         // InterfaceMethod net/minecraft/registry/entry/RegistryEntry.getKey:()Ljava/util/Optional;
+       6: invokedynamic #1030,  0           // InvokeDynamic #6:apply:()Ljava/util/function/Function;
+      11: invokevirtual #1034               // Method java/util/Optional.map:(Ljava/util/function/Function;)Ljava/util/Optional;
+      14: invokedynamic #1041,  0           // InvokeDynamic #7:apply:()Ljava/util/function/Function;
+      19: invokevirtual #1034               // Method java/util/Optional.map:(Ljava/util/function/Function;)Ljava/util/Optional;
+      22: invokedynamic #1049,  0           // InvokeDynamic #8:get:()Ljava/util/function/Supplier;
+      27: invokevirtual #1053               // Method java/util/Optional.orElseGet:(Ljava/util/function/Supplier;)Ljava/lang/Object;
+      30: checkcast     #477                // class net/minecraft/util/Identifier
+      33: areturn
+
+  public void tick(boolean);
+    Code:
+       0: aload_0
+       1: invokevirtual #1827               // Method tickAutosaveIndicator:()V
+       4: iload_1
+       5: ifne          12
+       8: aload_0
+       9: invokevirtual #1829               // Method tick:()V
+      12: return
+
+  public void setRecordPlayingOverlay(net.minecraft.text.Text);
+    Code:
+       0: ldc_w         #1877               // String record.nowPlaying
+       3: iconst_1
+       4: anewarray     #4                  // class java/lang/Object
+       7: dup
+       8: iconst_0
+       9: aload_1
+      10: aastore
+      11: invokestatic  #1253               // InterfaceMethod net/minecraft/text/Text.translatable:(Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/text/MutableText;
+      14: astore_2
+      15: aload_0
+      16: aload_2
+      17: iconst_1
+      18: invokevirtual #1881               // Method setOverlayMessage:(Lnet/minecraft/text/Text;Z)V
+      21: aload_0
+      22: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+      25: invokevirtual #1885               // Method net/minecraft/client/MinecraftClient.getNarratorManager:()Lnet/minecraft/client/util/NarratorManager;
+      28: aload_2
+      29: invokevirtual #1890               // Method net/minecraft/client/util/NarratorManager.narrateSystemImmediately:(Lnet/minecraft/text/Text;)V
+      32: return
+
+  public void setOverlayMessage(net.minecraft.text.Text, boolean);
+    Code:
+       0: aload_0
+       1: iconst_0
+       2: invokevirtual #1895               // Method setCanShowChatDisabledScreen:(Z)V
+       5: aload_0
+       6: aload_1
+       7: putfield      #597                // Field overlayMessage:Lnet/minecraft/text/Text;
+      10: aload_0
+      11: bipush        60
+      13: putfield      #599                // Field overlayRemaining:I
+      16: aload_0
+      17: iload_2
+      18: putfield      #619                // Field overlayTinted:Z
+      21: return
+
+  public void setCanShowChatDisabledScreen(boolean);
+    Code:
+       0: aload_0
+       1: iload_1
+       2: putfield      #1897               // Field canShowChatDisabledScreen:Z
+       5: return
+
+  public boolean shouldShowChatDisabledScreen();
+    Code:
+       0: aload_0
+       1: getfield      #1897               // Field canShowChatDisabledScreen:Z
+       4: ifeq          18
+       7: aload_0
+       8: getfield      #599                // Field overlayRemaining:I
+      11: ifle          18
+      14: iconst_1
+      15: goto          19
+      18: iconst_0
+      19: ireturn
+
+  public void setTitleTicks(int, int, int);
+    Code:
+       0: iload_1
+       1: iflt          9
+       4: aload_0
+       5: iload_1
+       6: putfield      #288                // Field titleFadeInTicks:I
+       9: iload_2
+      10: iflt          18
+      13: aload_0
+      14: iload_2
+      15: putfield      #290                // Field titleStayTicks:I
+      18: iload_3
+      19: iflt          27
+      22: aload_0
+      23: iload_3
+      24: putfield      #292                // Field titleFadeOutTicks:I
+      27: aload_0
+      28: getfield      #649                // Field titleRemainTicks:I
+      31: ifle          52
+      34: aload_0
+      35: aload_0
+      36: getfield      #288                // Field titleFadeInTicks:I
+      39: aload_0
+      40: getfield      #290                // Field titleStayTicks:I
+      43: iadd
+      44: aload_0
+      45: getfield      #292                // Field titleFadeOutTicks:I
+      48: iadd
+      49: putfield      #649                // Field titleRemainTicks:I
+      52: return
+
+  public void setSubtitle(net.minecraft.text.Text);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #661                // Field subtitle:Lnet/minecraft/text/Text;
+       5: return
+
+  public void setTitle(net.minecraft.text.Text);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #647                // Field title:Lnet/minecraft/text/Text;
+       5: aload_0
+       6: aload_0
+       7: getfield      #288                // Field titleFadeInTicks:I
+      10: aload_0
+      11: getfield      #290                // Field titleStayTicks:I
+      14: iadd
+      15: aload_0
+      16: getfield      #292                // Field titleFadeOutTicks:I
+      19: iadd
+      20: putfield      #649                // Field titleRemainTicks:I
+      23: return
+
+  public void clearTitle();
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: putfield      #647                // Field title:Lnet/minecraft/text/Text;
+       5: aload_0
+       6: aconst_null
+       7: putfield      #661                // Field subtitle:Lnet/minecraft/text/Text;
+      10: aload_0
+      11: iconst_0
+      12: putfield      #649                // Field titleRemainTicks:I
+      15: return
+
+  public net.minecraft.client.gui.hud.ChatHud getChatHud();
+    Code:
+       0: aload_0
+       1: getfield      #211                // Field chatHud:Lnet/minecraft/client/gui/hud/ChatHud;
+       4: areturn
+
+  public int getTicks();
+    Code:
+       0: aload_0
+       1: getfield      #688                // Field ticks:I
+       4: ireturn
+
+  public net.minecraft.client.font.TextRenderer getTextRenderer();
+    Code:
+       0: aload_0
+       1: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+       4: getfield      #1093               // Field net/minecraft/client/MinecraftClient.textRenderer:Lnet/minecraft/client/font/TextRenderer;
+       7: areturn
+
+  public net.minecraft.client.gui.hud.SpectatorHud getSpectatorHud();
+    Code:
+       0: aload_0
+       1: getfield      #206                // Field spectatorHud:Lnet/minecraft/client/gui/hud/SpectatorHud;
+       4: areturn
+
+  public net.minecraft.client.gui.hud.PlayerListHud getPlayerListHud();
+    Code:
+       0: aload_0
+       1: getfield      #218                // Field playerListHud:Lnet/minecraft/client/gui/hud/PlayerListHud;
+       4: areturn
+
+  public void clear();
+    Code:
+       0: aload_0
+       1: getfield      #218                // Field playerListHud:Lnet/minecraft/client/gui/hud/PlayerListHud;
+       4: invokevirtual #1916               // Method net/minecraft/client/gui/hud/PlayerListHud.clear:()V
+       7: aload_0
+       8: getfield      #223                // Field bossBarHud:Lnet/minecraft/client/gui/hud/BossBarHud;
+      11: invokevirtual #1917               // Method net/minecraft/client/gui/hud/BossBarHud.clear:()V
+      14: aload_0
+      15: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+      18: invokevirtual #1921               // Method net/minecraft/client/MinecraftClient.getToastManager:()Lnet/minecraft/client/toast/ToastManager;
+      21: invokevirtual #1924               // Method net/minecraft/client/toast/ToastManager.clear:()V
+      24: aload_0
+      25: getfield      #201                // Field debugHud:Lnet/minecraft/client/gui/hud/DebugHud;
+      28: invokevirtual #1925               // Method net/minecraft/client/gui/hud/DebugHud.clear:()V
+      31: aload_0
+      32: getfield      #211                // Field chatHud:Lnet/minecraft/client/gui/hud/ChatHud;
+      35: iconst_1
+      36: invokevirtual #1927               // Method net/minecraft/client/gui/hud/ChatHud.clear:(Z)V
+      39: aload_0
+      40: invokevirtual #1929               // Method clearTitle:()V
+      43: aload_0
+      44: invokevirtual #284                // Method setDefaultTitleFade:()V
+      47: return
+
+  public net.minecraft.client.gui.hud.BossBarHud getBossBarHud();
+    Code:
+       0: aload_0
+       1: getfield      #223                // Field bossBarHud:Lnet/minecraft/client/gui/hud/BossBarHud;
+       4: areturn
+
+  public net.minecraft.client.gui.hud.DebugHud getDebugHud();
+    Code:
+       0: aload_0
+       1: getfield      #201                // Field debugHud:Lnet/minecraft/client/gui/hud/DebugHud;
+       4: areturn
+
+  public void resetDebugHudChunk();
+    Code:
+       0: aload_0
+       1: getfield      #201                // Field debugHud:Lnet/minecraft/client/gui/hud/DebugHud;
+       4: invokevirtual #1937               // Method net/minecraft/client/gui/hud/DebugHud.resetChunk:()V
+       7: return
+
+  public void renderAutosaveIndicator(net.minecraft.client.gui.DrawContext, net.minecraft.client.render.RenderTickCounter);
+    Code:
+       0: aload_0
+       1: getfield      #195                // Field client:Lnet/minecraft/client/MinecraftClient;
+       4: getfield      #308                // Field net/minecraft/client/MinecraftClient.options:Lnet/minecraft/client/option/GameOptions;
+       7: invokevirtual #1941               // Method net/minecraft/client/option/GameOptions.getShowAutosaveIndicator:()Lnet/minecraft/client/option/SimpleOption;
+      10: invokevirtual #538                // Method net/minecraft/client/option/SimpleOption.getValue:()Ljava/lang/Object;
+      13: checkcast     #1943               // class java/lang/Boolean
+      16: invokevirtual #1946               // Method java/lang/Boolean.booleanValue:()Z
+      19: ifeq          146
+      22: aload_0
+      23: getfield      #1868               // Field autosaveIndicatorAlpha:F
+      26: fconst_0
+      27: fcmpl
+      28: ifgt          40
+      31: aload_0
+      32: getfield      #1870               // Field lastAutosaveIndicatorAlpha:F
+      35: fconst_0
+      36: fcmpl
+      37: ifle          146
+      40: ldc_w         #603                // float 255.0f
+      43: aload_2
+      44: invokeinterface #1949,  1         // InterfaceMethod net/minecraft/client/render/RenderTickCounter.getFixedDeltaTicks:()F
+      49: aload_0
+      50: getfield      #1870               // Field lastAutosaveIndicatorAlpha:F
+      53: aload_0
+      54: getfield      #1868               // Field autosaveIndicatorAlpha:F
+      57: invokestatic  #419                // Method net/minecraft/util/math/MathHelper.lerp:(FFF)F
+      60: fconst_0
+      61: fconst_1
+      62: invokestatic  #989                // Method net/minecraft/util/math/MathHelper.clamp:(FFF)F
+      65: fmul
+      66: invokestatic  #1673               // Method net/minecraft/util/math/MathHelper.floor:(F)I
+      69: istore_3
+      70: iload_3
+      71: ifle          146
+      74: aload_0
+      75: invokevirtual #595                // Method getTextRenderer:()Lnet/minecraft/client/font/TextRenderer;
+      78: astore        4
+      80: aload         4
+      82: getstatic     #1951               // Field SAVING_LEVEL_TEXT:Lnet/minecraft/text/Text;
+      85: invokevirtual #636                // Method net/minecraft/client/font/TextRenderer.getWidth:(Lnet/minecraft/text/StringVisitable;)I
+      88: istore        5
+      90: iload_3
+      91: iconst_m1
+      92: invokestatic  #632                // Method net/minecraft/util/math/ColorHelper.withAlpha:(II)I
+      95: istore        6
+      97: aload_1
+      98: invokevirtual #581                // Method net/minecraft/client/gui/DrawContext.getScaledWindowWidth:()I
+     101: iload         5
+     103: isub
+     104: iconst_5
+     105: isub
+     106: istore        7
+     108: aload_1
+     109: invokevirtual #584                // Method net/minecraft/client/gui/DrawContext.getScaledWindowHeight:()I
+     112: aload         4
+     114: invokestatic  #1356               // Method java/util/Objects.requireNonNull:(Ljava/lang/Object;)Ljava/lang/Object;
+     117: pop
+     118: bipush        9
+     120: isub
+     121: iconst_5
+     122: isub
+     123: istore        8
+     125: aload_1
+     126: invokevirtual #324                // Method net/minecraft/client/gui/DrawContext.createNewRootLayer:()V
+     129: aload_1
+     130: aload         4
+     132: getstatic     #1951               // Field SAVING_LEVEL_TEXT:Lnet/minecraft/text/Text;
+     135: iload         7
+     137: iload         8
+     139: iload         5
+     141: iload         6
+     143: invokevirtual #640                // Method net/minecraft/client/gui/DrawContext.drawTextWithBackground:(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIII)V
+     146: return
+
+  static {};
+    Code:
+       0: ldc_w         #2060               // String hud/crosshair
+       3: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+       6: putstatic     #830                // Field CROSSHAIR_TEXTURE:Lnet/minecraft/util/Identifier;
+       9: ldc_w         #2065               // String hud/crosshair_attack_indicator_full
+      12: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      15: putstatic     #862                // Field CROSSHAIR_ATTACK_INDICATOR_FULL_TEXTURE:Lnet/minecraft/util/Identifier;
+      18: ldc_w         #2067               // String hud/crosshair_attack_indicator_background
+      21: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      24: putstatic     #865                // Field CROSSHAIR_ATTACK_INDICATOR_BACKGROUND_TEXTURE:Lnet/minecraft/util/Identifier;
+      27: ldc_w         #2069               // String hud/crosshair_attack_indicator_progress
+      30: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      33: putstatic     #867                // Field CROSSHAIR_ATTACK_INDICATOR_PROGRESS_TEXTURE:Lnet/minecraft/util/Identifier;
+      36: ldc_w         #2071               // String hud/effect_background_ambient
+      39: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      42: putstatic     #978                // Field EFFECT_BACKGROUND_AMBIENT_TEXTURE:Lnet/minecraft/util/Identifier;
+      45: ldc_w         #2073               // String hud/effect_background
+      48: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      51: putstatic     #980                // Field EFFECT_BACKGROUND_TEXTURE:Lnet/minecraft/util/Identifier;
+      54: ldc_w         #2075               // String hud/hotbar
+      57: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      60: putstatic     #1129               // Field HOTBAR_TEXTURE:Lnet/minecraft/util/Identifier;
+      63: ldc_w         #2077               // String hud/hotbar_selection
+      66: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      69: putstatic     #1131               // Field HOTBAR_SELECTION_TEXTURE:Lnet/minecraft/util/Identifier;
+      72: ldc_w         #2079               // String hud/hotbar_offhand_left
+      75: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      78: putstatic     #1147               // Field HOTBAR_OFFHAND_LEFT_TEXTURE:Lnet/minecraft/util/Identifier;
+      81: ldc_w         #2081               // String hud/hotbar_offhand_right
+      84: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      87: putstatic     #1149               // Field HOTBAR_OFFHAND_RIGHT_TEXTURE:Lnet/minecraft/util/Identifier;
+      90: ldc_w         #2083               // String hud/hotbar_attack_indicator_background
+      93: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+      96: putstatic     #1166               // Field HOTBAR_ATTACK_INDICATOR_BACKGROUND_TEXTURE:Lnet/minecraft/util/Identifier;
+      99: ldc_w         #2085               // String hud/hotbar_attack_indicator_progress
+     102: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     105: putstatic     #1168               // Field HOTBAR_ATTACK_INDICATOR_PROGRESS_TEXTURE:Lnet/minecraft/util/Identifier;
+     108: ldc_w         #2087               // String hud/armor_empty
+     111: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     114: putstatic     #1503               // Field ARMOR_EMPTY_TEXTURE:Lnet/minecraft/util/Identifier;
+     117: ldc_w         #2089               // String hud/armor_half
+     120: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     123: putstatic     #1501               // Field ARMOR_HALF_TEXTURE:Lnet/minecraft/util/Identifier;
+     126: ldc_w         #2091               // String hud/armor_full
+     129: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     132: putstatic     #1499               // Field ARMOR_FULL_TEXTURE:Lnet/minecraft/util/Identifier;
+     135: ldc_w         #2093               // String hud/food_empty_hunger
+     138: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     141: putstatic     #1633               // Field FOOD_EMPTY_HUNGER_TEXTURE:Lnet/minecraft/util/Identifier;
+     144: ldc_w         #2095               // String hud/food_half_hunger
+     147: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     150: putstatic     #1635               // Field FOOD_HALF_HUNGER_TEXTURE:Lnet/minecraft/util/Identifier;
+     153: ldc_w         #2097               // String hud/food_full_hunger
+     156: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     159: putstatic     #1637               // Field FOOD_FULL_HUNGER_TEXTURE:Lnet/minecraft/util/Identifier;
+     162: ldc_w         #2099               // String hud/food_empty
+     165: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     168: putstatic     #1639               // Field FOOD_EMPTY_TEXTURE:Lnet/minecraft/util/Identifier;
+     171: ldc_w         #2101               // String hud/food_half
+     174: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     177: putstatic     #1641               // Field FOOD_HALF_TEXTURE:Lnet/minecraft/util/Identifier;
+     180: ldc_w         #2103               // String hud/food_full
+     183: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     186: putstatic     #1643               // Field FOOD_FULL_TEXTURE:Lnet/minecraft/util/Identifier;
+     189: ldc_w         #2105               // String hud/air
+     192: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     195: putstatic     #1593               // Field AIR_TEXTURE:Lnet/minecraft/util/Identifier;
+     198: ldc_w         #2107               // String hud/air_bursting
+     201: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     204: putstatic     #1595               // Field AIR_BURSTING_TEXTURE:Lnet/minecraft/util/Identifier;
+     207: ldc_w         #2109               // String hud/air_empty
+     210: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     213: putstatic     #1601               // Field AIR_EMPTY_TEXTURE:Lnet/minecraft/util/Identifier;
+     216: ldc_w         #2111               // String hud/heart/vehicle_container
+     219: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     222: putstatic     #1659               // Field VEHICLE_CONTAINER_HEART_TEXTURE:Lnet/minecraft/util/Identifier;
+     225: ldc_w         #2113               // String hud/heart/vehicle_full
+     228: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     231: putstatic     #1661               // Field VEHICLE_FULL_HEART_TEXTURE:Lnet/minecraft/util/Identifier;
+     234: ldc_w         #2115               // String hud/heart/vehicle_half
+     237: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     240: putstatic     #1663               // Field VEHICLE_HALF_HEART_TEXTURE:Lnet/minecraft/util/Identifier;
+     243: ldc_w         #2117               // String textures/misc/vignette.png
+     246: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     249: putstatic     #1763               // Field VIGNETTE_TEXTURE:Lnet/minecraft/util/Identifier;
+     252: ldc_w         #2119               // String textures/misc/nausea.png
+     255: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     258: putstatic     #1809               // Field NAUSEA_TEXTURE:Lnet/minecraft/util/Identifier;
+     261: ldc_w         #2121               // String textures/misc/spyglass_scope.png
+     264: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     267: putstatic     #1675               // Field SPYGLASS_SCOPE:Lnet/minecraft/util/Identifier;
+     270: ldc_w         #2123               // String textures/misc/powder_snow_outline.png
+     273: invokestatic  #2063               // Method net/minecraft/util/Identifier.ofVanilla:(Ljava/lang/String;)Lnet/minecraft/util/Identifier;
+     276: putstatic     #503                // Field POWDER_SNOW_OUTLINE:Lnet/minecraft/util/Identifier;
+     279: invokedynamic #2129,  0           // InvokeDynamic #14:apply:()Ljava/util/function/Function;
+     284: invokestatic  #2135               // InterfaceMethod java/util/Comparator.comparing:(Ljava/util/function/Function;)Ljava/util/Comparator;
+     287: invokeinterface #2139,  1         // InterfaceMethod java/util/Comparator.reversed:()Ljava/util/Comparator;
+     292: invokedynamic #2143,  0           // InvokeDynamic #15:apply:()Ljava/util/function/Function;
+     297: getstatic     #2148               // Field java/lang/String.CASE_INSENSITIVE_ORDER:Ljava/util/Comparator;
+     300: invokeinterface #2152,  3         // InterfaceMethod java/util/Comparator.thenComparing:(Ljava/util/function/Function;Ljava/util/Comparator;)Ljava/util/Comparator;
+     305: putstatic     #1294               // Field SCOREBOARD_ENTRY_COMPARATOR:Ljava/util/Comparator;
+     308: ldc_w         #2154               // String demo.demoExpired
+     311: invokestatic  #2157               // InterfaceMethod net/minecraft/text/Text.translatable:(Ljava/lang/String;)Lnet/minecraft/text/MutableText;
+     314: putstatic     #1232               // Field DEMO_EXPIRED_MESSAGE:Lnet/minecraft/text/Text;
+     317: ldc_w         #2159               // String menu.savingLevel
+     320: invokestatic  #2157               // InterfaceMethod net/minecraft/text/Text.translatable:(Ljava/lang/String;)Lnet/minecraft/text/MutableText;
+     323: putstatic     #1951               // Field SAVING_LEVEL_TEXT:Lnet/minecraft/text/Text;
+     326: return
+}

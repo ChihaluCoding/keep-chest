@@ -1,10 +1,1 @@
-{
-  "model": {
-    "type": "minecraft:special",
-    "base": "keep-chest:item/packed_large_chest",
-    "model": {
-      "type": "minecraft:chest",
-      "texture": "minecraft:normal"
-    }
-  }
-}
+{"model":{"type":"minecraft:model","model":"keep-chest:item/packed_large_chest"}}

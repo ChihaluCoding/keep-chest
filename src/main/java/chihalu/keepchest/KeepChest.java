@@ -11,6 +11,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.AbstractChestBlock;
 import net.minecraft.block.BarrelBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,8 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -68,18 +68,14 @@ public class KeepChest implements ModInitializer {
 
                         PackedChestItem.PackResult packResult = result.get();
                         ItemStack stack = packResult.stack();
-                        serverPlayer.giveItemStack(stack);
+                        Block.dropStack(serverWorld, pos, stack);
 
                         removeChestBlocks(serverWorld, pos, state, packResult.secondaryPos());
 
                         serverPlayer.incrementStat(Stats.MINED.getOrCreateStat(state.getBlock()));
-                        serverPlayer.sendMessage(
-                                        Text.translatable("message.keep-chest.packed",
-                                                        packResult.containerType().displayName()),
-                                        true);
-                        SoundEvent sound = state.getBlock() instanceof BarrelBlock ? SoundEvents.BLOCK_BARREL_CLOSE
-                                        : SoundEvents.BLOCK_CHEST_CLOSE;
-                        world.playSound(null, pos, sound, SoundCategory.BLOCKS, 0.75f, 0.9f);
+                        BlockSoundGroup soundGroup = state.getSoundGroup();
+                        world.playSound(null, pos, soundGroup.getBreakSound(), SoundCategory.BLOCKS,
+                                        soundGroup.getVolume(), soundGroup.getPitch());
                         return false;
                 });
         }

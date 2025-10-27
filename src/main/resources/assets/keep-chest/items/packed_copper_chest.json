@@ -1,10 +1,1 @@
-{
-  "model": {
-    "type": "minecraft:special",
-    "base": "keep-chest:item/packed_copper_chest",
-    "model": {
-      "type": "minecraft:chest",
-      "texture": "minecraft:copper"
-    }
-  }
-}
+{"model":{"type":"minecraft:model","model":"keep-chest:item/packed_copper_chest"}}

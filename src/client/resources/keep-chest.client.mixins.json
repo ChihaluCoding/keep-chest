@@ -6,9 +6,11 @@
                 "ExampleClientMixin",
                 "WorldRendererInvoker",
                 "WorldRendererMixin",
-                "InGameHudMixin"
+                "InGameHudMixin",
+                "HandledScreenMixin"
         ],
 	"injectors": {
 		"defaultRequire": 1
 	}
 }
+

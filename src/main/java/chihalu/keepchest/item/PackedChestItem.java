@@ -629,13 +629,30 @@ public class PackedChestItem extends Item {
 
         private static Direction determineFacing(ItemUsageContext context, BlockState savedState) {
                 PlayerEntity player = context.getPlayer();
+                Block block = savedState.getBlock();
+                Direction placementSide = context.getSide();
 
-                if (savedState.getBlock() instanceof ChestBlock || savedState.getBlock() instanceof CopperChestBlock) {
+                if (block instanceof ChestBlock || block instanceof CopperChestBlock) {
                         if (player != null) {
                                 return player.getHorizontalFacing().getOpposite();
                         }
 
                         return savedState.contains(ChestBlock.FACING) ? savedState.get(ChestBlock.FACING) : Direction.NORTH;
+                }
+
+                if (block instanceof BarrelBlock barrelBlock) {
+                        ItemPlacementContext placementContext = context instanceof ItemPlacementContext ipc ? ipc
+                                        : new ItemPlacementContext(context);
+                        BlockState placementState = barrelBlock.getPlacementState(placementContext);
+                        if (placementState != null && placementState.contains(Properties.FACING)) {
+                                return placementState.get(Properties.FACING);
+                        }
+
+                        if (savedState.contains(Properties.FACING)) {
+                                return savedState.get(Properties.FACING);
+                        }
+
+                        return placementSide.getAxis().isVertical() ? placementSide : Direction.NORTH;
                 }
 
                 if (savedState.contains(Properties.FACING)) {

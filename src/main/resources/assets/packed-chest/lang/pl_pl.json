@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "Spakowana skrzynia",
+  "item.packed-chest.packed_large_chest": "Spakowana duza skrzynia",
+  "item.packed-chest.packed_copper_chest": "Spakowana miedziana skrzynia",
+  "item.packed-chest.packed_exposed_copper_chest": "Spakowana zwietrzala miedziana skrzynia",
+  "item.packed-chest.packed_weathered_copper_chest": "Spakowana postarzana miedziana skrzynia",
+  "item.packed-chest.packed_oxidized_copper_chest": "Spakowana utleniona miedziana skrzynia",
+  "item.packed-chest.packed_waxed_copper_chest": "Spakowana woskowana miedziana skrzynia",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Spakowana woskowana zwietrzala miedziana skrzynia",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Spakowana woskowana postarzana miedziana skrzynia",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Spakowana woskowana utleniona miedziana skrzynia",
+  "item.packed-chest.packed_barrel": "Spakowana beczka",
+  "message.packed-chest.pack_failed": "Nie mozna spakowac tej skrzyni.",
+  "message.packed-chest.unpack_failed": "Brakuje miejsca na rozpakowanie skrzyni."
+}

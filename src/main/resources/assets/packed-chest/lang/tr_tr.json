@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "Paketlenmis sandik",
+  "item.packed-chest.packed_large_chest": "Paketlenmis buyuk sandik",
+  "item.packed-chest.packed_copper_chest": "Paketlenmis bakir sandik",
+  "item.packed-chest.packed_exposed_copper_chest": "Paketlenmis kirli bakir sandik",
+  "item.packed-chest.packed_weathered_copper_chest": "Paketlenmis yipranmis bakir sandik",
+  "item.packed-chest.packed_oxidized_copper_chest": "Paketlenmis oksitlenmis bakir sandik",
+  "item.packed-chest.packed_waxed_copper_chest": "Paketlenmis mumlanmis bakir sandik",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Paketlenmis mumlanmis kirli bakir sandik",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Paketlenmis mumlanmis yipranmis bakir sandik",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Paketlenmis mumlanmis oksitlenmis bakir sandik",
+  "item.packed-chest.packed_barrel": "Paketlenmis fici",
+  "message.packed-chest.pack_failed": "Bu sandik paketlenemedi.",
+  "message.packed-chest.unpack_failed": "Sandigi acmak icin yeterli alan yok."
+}

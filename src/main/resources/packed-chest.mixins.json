@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "chihalu.packedchest.mixin",
+	"compatibilityLevel": "JAVA_21",
+        "mixins": [
+                "ExampleMixin",
+                "PlayerEntityMixin"
+        ],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

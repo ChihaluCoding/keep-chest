@@ -1,10 +1,10 @@
 # AGENTS.md
 
-## Keep Chest
+## Packed Chest
 
 ## 概要
 
-**Keep Chest（キープチェスト）** は、プレイヤーがスニーク（Shift）しながらチェストを破壊した場合に、そのチェストを「中身ごと保持したアイテム（Packed Chest）」として取得できるようにする Minecraft 用の モッド機能です。サバイバルの流れを壊さないよう保護連携・制限（コスト／クールダウン／ブラックリスト）を備え、シングル／マルチどちらでも安全に動作することを目的とします。
+**Packed Chest（キープチェスト）** は、プレイヤーがスニーク（Shift）しながらチェストを破壊した場合に、そのチェストを「中身ごと保持したアイテム（Packed Chest）」として取得できるようにする Minecraft 用の モッド機能です。サバイバルの流れを壊さないよう保護連携・制限（コスト／クールダウン／ブラックリスト）を備え、シングル／マルチどちらでも安全に動作することを目的とします。
 
 ---
 
@@ -58,14 +58,14 @@
 4. Double chest 対応：接続相方の BlockEntity も読み取り、1 つにマージして保存（設定 `allowDoubleChestPack` による）。
 5. PackedChest をプレイヤーインベントリへ追加、空きが無ければ地面へドロップ。
 6. チェストブロック（両側）が安全に削除される（破壊サウンドは出すがアイテム散乱はキャンセル）。
-7. ログ/イベントを発火：`KeepChestPackEvent` を発行（Cancelable）。
+7. ログ/イベントを発火：`PackedChestPackEvent` を発行（Cancelable）。
 
 ### B. PackedChest の設置（Unpack）
 
 1. `ItemUse`（右クリック設置）で PackedChest を設置する際、NBT の `BlockEntityTag` を読み込み BlockEntity を再構築。
 2. ChestType（single/left/right/trapped）を考慮して適切なブロックを設置。
 3. 近隣の BlockState との整合性を確認（例えば既にチェストがあって double になってしまう場合の対処）。
-4. イベント `KeepChestUnpackEvent` を発行（Cancelable）。
+4. イベント `PackedChestUnpackEvent` を発行（Cancelable）。
 5. 設置成功後は PackedChest アイテムを消費（通常の ItemStack 操作）。
 
 ---
@@ -105,7 +105,7 @@
 
 ## データ構造（NBT / アイテム定義）
 
-* **Item ID**: `keep_chest:packed_chest`（modId=`keep_chest` 推奨）
+* **Item ID**: `packed_chest:packed_chest`（modId=`packed_chest` 推奨）
 * **NBT (Item)**:
 
   * `BlockEntityTag`（Vanilla Shulker 同様の形式）
@@ -116,7 +116,7 @@
     * `Lock`: (optional)
     * `OwnerUUID`: string (optional; 所有者ロック用)
     * `PackedAt`: long (world time)
-    * `KeepChestMeta`（optional）:
+    * `PackedChestMeta`（optional）:
     * `PackedVersion`: int (将来の互換性)
     * `PackedSize`: int (bytes) — 便利ログ用
 
@@ -124,11 +124,11 @@
 
 ## API / イベント（外部フック）
 
-* `KeepChestPackEvent` (server-side)
+* `PackedChestPackEvent` (server-side)
 
   * Fields: `Player`, `BlockPos`, `PackedItemStack`, `Cause`
   * Cancelable: true
-* `KeepChestUnpackEvent`
+* `PackedChestUnpackEvent`
 
   * Fields: `Player`, `BlockPos`, `PackedItemStack`
   * Cancelable: true
@@ -198,11 +198,11 @@
 
 ## アセット一覧（最低限）
 
-* `assets/keep_chest/lang/en_us.json`（ローカライズ）
-* `assets/keep_chest/lang/ja_jp.json`
-* `assets/keep_chest/textures/item/packed_chest.png`（アイコン）
-* `assets/keep_chest/textures/gui/tooltip.png`（必要なら）
-* `mod.toml`（modId=keep_chest 推奨）
+* `assets/packed_chest/lang/en_us.json`（ローカライズ）
+* `assets/packed_chest/lang/ja_jp.json`
+* `assets/packed_chest/textures/item/packed_chest.png`（アイコン）
+* `assets/packed_chest/textures/gui/tooltip.png`（必要なら）
+* `mod.toml`（modId=packed_chest 推奨）
 
 ---
 
@@ -243,9 +243,9 @@
 
 ```json
 {
-  "item.keep_chest.packed": "Keep Chest (Packed)",
-  "item.keep_chest.tooltip_1": "Shift + 破壊でチェストを中身のまま回収します。",
-  "message.keep_chest.packed_success": "チェストを詰めました。"
+  "item.packed_chest.packed": "Packed Chest (Packed)",
+  "item.packed_chest.tooltip_1": "Shift + 破壊でチェストを中身のまま回収します。",
+  "message.packed_chest.packed_success": "チェストを詰めました。"
 }
 ```
 

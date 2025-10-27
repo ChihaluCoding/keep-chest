@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "Gepackte Truhe",
+  "item.packed-chest.packed_large_chest": "Gepackte große Truhe",
+  "item.packed-chest.packed_copper_chest": "Gepackte Kupfertruhe",
+  "item.packed-chest.packed_exposed_copper_chest": "Gepackte angelaufene Kupfertruhe",
+  "item.packed-chest.packed_weathered_copper_chest": "Gepackte verwitterte Kupfertruhe",
+  "item.packed-chest.packed_oxidized_copper_chest": "Gepackte oxidierte Kupfertruhe",
+  "item.packed-chest.packed_waxed_copper_chest": "Gepackte gewachste Kupfertruhe",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Gepackte gewachste angelaufene Kupfertruhe",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Gepackte gewachste verwitterte Kupfertruhe",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Gepackte gewachste oxidierte Kupfertruhe",
+  "item.packed-chest.packed_barrel": "Gepacktes Fass",
+  "message.packed-chest.pack_failed": "Diese Truhe konnte nicht gepackt werden.",
+  "message.packed-chest.unpack_failed": "Es ist nicht genug Platz zum Auspacken der Truhe."
+}

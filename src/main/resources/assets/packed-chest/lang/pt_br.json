@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "Bau compactado",
+  "item.packed-chest.packed_large_chest": "Bau grande compactado",
+  "item.packed-chest.packed_copper_chest": "Bau de cobre compactado",
+  "item.packed-chest.packed_exposed_copper_chest": "Bau de cobre desgastado compactado",
+  "item.packed-chest.packed_weathered_copper_chest": "Bau de cobre envelhecido compactado",
+  "item.packed-chest.packed_oxidized_copper_chest": "Bau de cobre oxidado compactado",
+  "item.packed-chest.packed_waxed_copper_chest": "Bau de cobre encerado compactado",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Bau de cobre desgastado encerado compactado",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Bau de cobre envelhecido encerado compactado",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Bau de cobre oxidado encerado compactado",
+  "item.packed-chest.packed_barrel": "Barril compactado",
+  "message.packed-chest.pack_failed": "Nao foi possivel compactar este bau.",
+  "message.packed-chest.unpack_failed": "Nao ha espaco suficiente para abrir o bau."
+}

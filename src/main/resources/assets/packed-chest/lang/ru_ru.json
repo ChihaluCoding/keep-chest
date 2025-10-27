@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "Упакованный сундук",
+  "item.packed-chest.packed_large_chest": "Упакованный большой сундук",
+  "item.packed-chest.packed_copper_chest": "Упакованный медный сундук",
+  "item.packed-chest.packed_exposed_copper_chest": "Упакованный ржавый медный сундук",
+  "item.packed-chest.packed_weathered_copper_chest": "Упакованный патинированный медный сундук",
+  "item.packed-chest.packed_oxidized_copper_chest": "Упакованный окисленный медный сундук",
+  "item.packed-chest.packed_waxed_copper_chest": "Упакованный вощеный медный сундук",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Упакованный вощеный ржавый медный сундук",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Упакованный вощеный патинированный медный сундук",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Упакованный вощеный окисленный медный сундук",
+  "item.packed-chest.packed_barrel": "Упакованная бочка",
+  "message.packed-chest.pack_failed": "Не удалось упаковать этот сундук.",
+  "message.packed-chest.unpack_failed": "Недостаточно места для размещения упакованного контейнера."
+}

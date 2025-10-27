@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "chihalu.packedchest.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+        "client": [
+                "ExampleClientMixin",
+                "WorldRendererInvoker",
+                "WorldRendererMixin",
+                "InGameHudMixin",
+                "HandledScreenMixin"
+        ],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
+

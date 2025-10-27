@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "Baule compattato",
+  "item.packed-chest.packed_large_chest": "Baule grande compattato",
+  "item.packed-chest.packed_copper_chest": "Baule di rame compattato",
+  "item.packed-chest.packed_exposed_copper_chest": "Baule di rame esposto compattato",
+  "item.packed-chest.packed_weathered_copper_chest": "Baule di rame degradato compattato",
+  "item.packed-chest.packed_oxidized_copper_chest": "Baule di rame ossidato compattato",
+  "item.packed-chest.packed_waxed_copper_chest": "Baule di rame cerato compattato",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Baule di rame esposto cerato compattato",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Baule di rame degradato cerato compattato",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Baule di rame ossidato cerato compattato",
+  "item.packed-chest.packed_barrel": "Barile compattato",
+  "message.packed-chest.pack_failed": "Impossibile compattare questo baule.",
+  "message.packed-chest.unpack_failed": "Non c'e abbastanza spazio per aprire il baule."
+}

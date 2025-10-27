@@ -1,0 +1,15 @@
+{
+  "item.packed-chest.packed_chest": "打包的箱子",
+  "item.packed-chest.packed_large_chest": "打包的大箱子",
+  "item.packed-chest.packed_copper_chest": "打包的铜制箱子",
+  "item.packed-chest.packed_exposed_copper_chest": "打包的锈蚀铜制箱子",
+  "item.packed-chest.packed_weathered_copper_chest": "打包的风化铜制箱子",
+  "item.packed-chest.packed_oxidized_copper_chest": "打包的氧化铜制箱子",
+  "item.packed-chest.packed_waxed_copper_chest": "打包的上蜡铜制箱子",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "打包的上蜡锈蚀铜制箱子",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "打包的上蜡风化铜制箱子",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "打包的上蜡氧化铜制箱子",
+  "item.packed-chest.packed_barrel": "打包的木桶",
+  "message.packed-chest.pack_failed": "无法打包此容器。",
+  "message.packed-chest.unpack_failed": "没有足够的空间放置打包容器。"
+}

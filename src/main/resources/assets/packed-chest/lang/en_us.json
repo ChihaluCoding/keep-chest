@@ -1,0 +1,18 @@
+{
+  "item.packed-chest.packed_chest": "Packed Chest",
+  "item.packed-chest.packed_large_chest": "Packed Large Chest",
+  "item.packed-chest.packed_copper_chest": "Packed Copper Chest",
+  "item.packed-chest.packed_exposed_copper_chest": "Packed Tarnished Copper Chest",
+  "item.packed-chest.packed_weathered_copper_chest": "Packed Weathered Copper Chest",
+  "item.packed-chest.packed_oxidized_copper_chest": "Packed Oxidized Copper Chest",
+  "item.packed-chest.packed_waxed_copper_chest": "Packed Waxed Copper Chest",
+  "item.packed-chest.packed_waxed_exposed_copper_chest": "Packed Waxed Tarnished Copper Chest",
+  "item.packed-chest.packed_waxed_weathered_copper_chest": "Packed Waxed Weathered Copper Chest",
+  "item.packed-chest.packed_waxed_oxidized_copper_chest": "Packed Waxed Oxidized Copper Chest",
+  "item.packed-chest.packed_barrel": "Packed Barrel",
+  "message.packed-chest.pack_failed": "Could not pack this container.",
+  "message.packed-chest.unpack_failed": "Failed to place the packed container.",
+  "screen.packed_chest.config.title": "Packed Chest Settings",
+  "option.packed_chest.preview_movement": "Allow moving items in preview"
+}
+

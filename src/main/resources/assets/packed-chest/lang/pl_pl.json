@@ -11,5 +11,13 @@
   "item.packed-chest.packed_waxed_oxidized_copper_chest": "Spakowana woskowana utleniona miedziana skrzynia",
   "item.packed-chest.packed_barrel": "Spakowana beczka",
   "message.packed-chest.pack_failed": "Nie mozna spakowac tej skrzyni.",
-  "message.packed-chest.unpack_failed": "Brakuje miejsca na rozpakowanie skrzyni."
+  "message.packed-chest.unpack_failed": "Brakuje miejsca na rozpakowanie skrzyni.",
+  "item.packed-chest.packed_copper_large_chest": "Spakowana miedziana skrzynia (Large)",
+  "item.packed-chest.packed_exposed_copper_large_chest": "Spakowana zwietrzala miedziana skrzynia (Large)",
+  "item.packed-chest.packed_weathered_copper_large_chest": "Spakowana postarzana miedziana skrzynia (Large)",
+  "item.packed-chest.packed_oxidized_copper_large_chest": "Spakowana utleniona miedziana skrzynia (Large)",
+  "item.packed-chest.packed_waxed_copper_large_chest": "Spakowana woskowana miedziana skrzynia (Large)",
+  "item.packed-chest.packed_waxed_exposed_copper_large_chest": "Spakowana woskowana zwietrzala miedziana skrzynia (Large)",
+  "item.packed-chest.packed_waxed_weathered_copper_large_chest": "Spakowana woskowana postarzana miedziana skrzynia (Large)",
+  "item.packed-chest.packed_waxed_oxidized_copper_large_chest": "Spakowana woskowana utleniona miedziana skrzynia (Large)"
 }

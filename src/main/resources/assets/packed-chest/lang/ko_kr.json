@@ -11,5 +11,13 @@
   "item.packed-chest.packed_waxed_oxidized_copper_chest": "포장된 밀랍 처리된 산화된 구리 상자",
   "item.packed-chest.packed_barrel": "포장된 통",
   "message.packed-chest.pack_failed": "이 상자는 포장할 수 없습니다.",
-  "message.packed-chest.unpack_failed": "포장된 용기를 설치할 공간이 부족합니다."
+  "message.packed-chest.unpack_failed": "포장된 용기를 설치할 공간이 부족합니다.",
+  "item.packed-chest.packed_copper_large_chest": "포장된 구리 상자 (Large)",
+  "item.packed-chest.packed_exposed_copper_large_chest": "포장된 노출된 구리 상자 (Large)",
+  "item.packed-chest.packed_weathered_copper_large_chest": "포장된 풍화된 구리 상자 (Large)",
+  "item.packed-chest.packed_oxidized_copper_large_chest": "포장된 산화된 구리 상자 (Large)",
+  "item.packed-chest.packed_waxed_copper_large_chest": "포장된 밀랍 처리된 구리 상자 (Large)",
+  "item.packed-chest.packed_waxed_exposed_copper_large_chest": "포장된 밀랍 처리된 노출된 구리 상자 (Large)",
+  "item.packed-chest.packed_waxed_weathered_copper_large_chest": "포장된 밀랍 처리된 풍화된 구리 상자 (Large)",
+  "item.packed-chest.packed_waxed_oxidized_copper_large_chest": "포장된 밀랍 처리된 산화된 구리 상자 (Large)"
 }

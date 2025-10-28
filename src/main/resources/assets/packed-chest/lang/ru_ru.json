@@ -11,5 +11,13 @@
   "item.packed-chest.packed_waxed_oxidized_copper_chest": "Упакованный вощеный окисленный медный сундук",
   "item.packed-chest.packed_barrel": "Упакованная бочка",
   "message.packed-chest.pack_failed": "Не удалось упаковать этот сундук.",
-  "message.packed-chest.unpack_failed": "Недостаточно места для размещения упакованного контейнера."
+  "message.packed-chest.unpack_failed": "Недостаточно места для размещения упакованного контейнера.",
+  "item.packed-chest.packed_copper_large_chest": "Упакованный медный сундук (Large)",
+  "item.packed-chest.packed_exposed_copper_large_chest": "Упакованный ржавый медный сундук (Large)",
+  "item.packed-chest.packed_weathered_copper_large_chest": "Упакованный патинированный медный сундук (Large)",
+  "item.packed-chest.packed_oxidized_copper_large_chest": "Упакованный окисленный медный сундук (Large)",
+  "item.packed-chest.packed_waxed_copper_large_chest": "Упакованный вощеный медный сундук (Large)",
+  "item.packed-chest.packed_waxed_exposed_copper_large_chest": "Упакованный вощеный ржавый медный сундук (Large)",
+  "item.packed-chest.packed_waxed_weathered_copper_large_chest": "Упакованный вощеный патинированный медный сундук (Large)",
+  "item.packed-chest.packed_waxed_oxidized_copper_large_chest": "Упакованный вощеный окисленный медный сундук (Large)"
 }

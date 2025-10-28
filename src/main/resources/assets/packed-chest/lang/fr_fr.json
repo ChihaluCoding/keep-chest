@@ -11,5 +11,13 @@
   "item.packed-chest.packed_waxed_oxidized_copper_chest": "Coffre en cuivre oxyde cire empaquete",
   "item.packed-chest.packed_barrel": "Tonneau empaquete",
   "message.packed-chest.pack_failed": "Impossible d'empaqueter ce coffre.",
-  "message.packed-chest.unpack_failed": "Il n'y a pas assez de place pour deballer le coffre."
+  "message.packed-chest.unpack_failed": "Il n'y a pas assez de place pour deballer le coffre.",
+  "item.packed-chest.packed_copper_large_chest": "Coffre en cuivre empaquete (Large)",
+  "item.packed-chest.packed_exposed_copper_large_chest": "Coffre en cuivre expose empaquete (Large)",
+  "item.packed-chest.packed_weathered_copper_large_chest": "Coffre en cuivre use empaquete (Large)",
+  "item.packed-chest.packed_oxidized_copper_large_chest": "Coffre en cuivre oxyde empaquete (Large)",
+  "item.packed-chest.packed_waxed_copper_large_chest": "Coffre en cuivre cire empaquete (Large)",
+  "item.packed-chest.packed_waxed_exposed_copper_large_chest": "Coffre en cuivre expose cire empaquete (Large)",
+  "item.packed-chest.packed_waxed_weathered_copper_large_chest": "Coffre en cuivre use cire empaquete (Large)",
+  "item.packed-chest.packed_waxed_oxidized_copper_large_chest": "Coffre en cuivre oxyde cire empaquete (Large)"
 }

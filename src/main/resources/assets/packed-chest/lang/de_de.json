@@ -11,5 +11,13 @@
   "item.packed-chest.packed_waxed_oxidized_copper_chest": "Gepackte gewachste oxidierte Kupfertruhe",
   "item.packed-chest.packed_barrel": "Gepacktes Fass",
   "message.packed-chest.pack_failed": "Diese Truhe konnte nicht gepackt werden.",
-  "message.packed-chest.unpack_failed": "Es ist nicht genug Platz zum Auspacken der Truhe."
+  "message.packed-chest.unpack_failed": "Es ist nicht genug Platz zum Auspacken der Truhe.",
+  "item.packed-chest.packed_copper_large_chest": "Gepackte Kupfertruhe (Large)",
+  "item.packed-chest.packed_exposed_copper_large_chest": "Gepackte angelaufene Kupfertruhe (Large)",
+  "item.packed-chest.packed_weathered_copper_large_chest": "Gepackte verwitterte Kupfertruhe (Large)",
+  "item.packed-chest.packed_oxidized_copper_large_chest": "Gepackte oxidierte Kupfertruhe (Large)",
+  "item.packed-chest.packed_waxed_copper_large_chest": "Gepackte gewachste Kupfertruhe (Large)",
+  "item.packed-chest.packed_waxed_exposed_copper_large_chest": "Gepackte gewachste angelaufene Kupfertruhe (Large)",
+  "item.packed-chest.packed_waxed_weathered_copper_large_chest": "Gepackte gewachste verwitterte Kupfertruhe (Large)",
+  "item.packed-chest.packed_waxed_oxidized_copper_large_chest": "Gepackte gewachste oxidierte Kupfertruhe (Large)"
 }

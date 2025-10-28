@@ -135,50 +135,61 @@ public class PackedChestItem extends Item {
                 }
 
                 if (block instanceof CopperChestBlock) {
-                        if (block == Blocks.COPPER_CHEST) {
-                                return PackedContainerType.COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.EXPOSED_COPPER_CHEST) {
-                                return PackedContainerType.EXPOSED_COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.WEATHERED_COPPER_CHEST) {
-                                return PackedContainerType.WEATHERED_COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.OXIDIZED_COPPER_CHEST) {
-                                return PackedContainerType.OXIDIZED_COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.WAXED_COPPER_CHEST) {
-                                return PackedContainerType.WAXED_COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.WAXED_EXPOSED_COPPER_CHEST) {
-                                return PackedContainerType.WAXED_EXPOSED_COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.WAXED_WEATHERED_COPPER_CHEST) {
-                                return PackedContainerType.WAXED_WEATHERED_COPPER_CHEST;
-                        }
-
-                        if (block == Blocks.WAXED_OXIDIZED_COPPER_CHEST) {
-                                return PackedContainerType.WAXED_OXIDIZED_COPPER_CHEST;
-                        }
-
-                        return PackedContainerType.COPPER_CHEST;
+                        return determineCopperContainerType(block, isDouble);
                 }
 
                 return isDouble ? PackedContainerType.LARGE_CHEST : PackedContainerType.CHEST;
         }
 
-        @Override
-        public ActionResult useOnBlock(ItemUsageContext context) {
-                World world = context.getWorld();
-                if (world.isClient()) {
-                        return ActionResult.SUCCESS;
+        private static PackedContainerType determineCopperContainerType(Block block, boolean isDouble) {
+                if (block == Blocks.COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_COPPER_CHEST : PackedContainerType.COPPER_CHEST;
                 }
+
+                if (block == Blocks.EXPOSED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_EXPOSED_COPPER_CHEST
+                                        : PackedContainerType.EXPOSED_COPPER_CHEST;
+                }
+
+                if (block == Blocks.WEATHERED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_WEATHERED_COPPER_CHEST
+                                        : PackedContainerType.WEATHERED_COPPER_CHEST;
+                }
+
+                if (block == Blocks.OXIDIZED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_OXIDIZED_COPPER_CHEST
+                                        : PackedContainerType.OXIDIZED_COPPER_CHEST;
+                }
+
+                if (block == Blocks.WAXED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_WAXED_COPPER_CHEST
+                                        : PackedContainerType.WAXED_COPPER_CHEST;
+                }
+
+                if (block == Blocks.WAXED_EXPOSED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_WAXED_EXPOSED_COPPER_CHEST
+                                        : PackedContainerType.WAXED_EXPOSED_COPPER_CHEST;
+                }
+
+                if (block == Blocks.WAXED_WEATHERED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_WAXED_WEATHERED_COPPER_CHEST
+                                        : PackedContainerType.WAXED_WEATHERED_COPPER_CHEST;
+                }
+
+                if (block == Blocks.WAXED_OXIDIZED_COPPER_CHEST) {
+                        return isDouble ? PackedContainerType.LARGE_WAXED_OXIDIZED_COPPER_CHEST
+                                        : PackedContainerType.WAXED_OXIDIZED_COPPER_CHEST;
+                }
+
+                return isDouble ? PackedContainerType.LARGE_COPPER_CHEST : PackedContainerType.COPPER_CHEST;
+        }
+
+		@Override
+		public ActionResult useOnBlock(ItemUsageContext context) {
+				World world = context.getWorld();
+				if (world.isClient()) {
+						return ActionResult.SUCCESS;
+				}
 
                 ItemStack stack = context.getStack();
                 TypedEntityData<BlockEntityType<?>> primaryData = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
@@ -199,15 +210,20 @@ public class PackedChestItem extends Item {
                         return ActionResult.FAIL;
                 }
 
-                PlacementPlan plan = placement.get();
-                if (!placeContainer(world, plan.primaryPos(), plan.primaryState(), plan.primaryData())) {
-                        notifyPlacementFailure(context.getPlayer());
-                        return ActionResult.FAIL;
-                }
+				PlacementPlan plan = placement.get();
+				if (!placeContainer(world, plan.primaryPos(), plan.primaryState(), plan.primaryData())) {
+						notifyPlacementFailure(context.getPlayer());
+						return ActionResult.FAIL;
+				}
 
-                if (plan.isDouble()) {
-                        placeContainer(world, plan.secondaryPos(), plan.secondaryState(), plan.secondaryData());
-                }
+				NeighborMerge neighborMerge = plan.neighborMerge();
+				if (neighborMerge != null) {
+						world.setBlockState(neighborMerge.neighborPos(), neighborMerge.neighborState(), Block.NOTIFY_ALL);
+				}
+
+				if (plan.isDouble()) {
+						placeContainer(world, plan.secondaryPos(), plan.secondaryState(), plan.secondaryData());
+				}
 
                 PlayerEntity player = context.getPlayer();
                 if (player instanceof ServerPlayerEntity serverPlayer) {
@@ -310,13 +326,21 @@ public class PackedChestItem extends Item {
                         secondaryData = TypedEntityData.create(secondaryType, secondaryEntityNbt);
                 }
 
-                ItemPlacementContext finalPrimaryContext = offsetPlacementContext(primaryPlacementContext, primaryPos);
-                if (!canPlace(world, finalPrimaryContext, primaryPos, primaryState)) {
-                        return Optional.empty();
-                }
+				ItemPlacementContext finalPrimaryContext = offsetPlacementContext(primaryPlacementContext, primaryPos);
+				if (!canPlace(world, finalPrimaryContext, primaryPos, primaryState)) {
+						return Optional.empty();
+				}
 
-                return Optional.of(new PlacementPlan(primaryPos, primaryState, primaryData, secondaryPos, secondaryState,
-                                secondaryData));
+				NeighborMergeResult neighborMerge = null;
+				if (!isDouble) {
+						neighborMerge = computeNeighborMerge(world, primaryPos, primaryState);
+						if (neighborMerge != null) {
+								primaryState = neighborMerge.primaryState();
+						}
+				}
+
+				return Optional.of(new PlacementPlan(primaryPos, primaryState, primaryData, secondaryPos, secondaryState,
+								secondaryData, neighborMerge != null ? neighborMerge.merge() : null));
         }
 
         private static boolean placeContainer(World world, BlockPos pos, BlockState state,
@@ -353,10 +377,10 @@ public class PackedChestItem extends Item {
                 return player == null || player.canPlaceOn(pos, context.getSide(), context.getStack());
         }
 
-        private static ItemPlacementContext offsetPlacementContext(ItemPlacementContext context, BlockPos newBlockPos) {
-                if (context.getBlockPos().equals(newBlockPos)) {
-                        return context;
-                }
+		private static ItemPlacementContext offsetPlacementContext(ItemPlacementContext context, BlockPos newBlockPos) {
+				if (context.getBlockPos().equals(newBlockPos)) {
+						return context;
+				}
 
                 Vec3d originalHitPos = context.getHitPos();
                 Vec3d offset = Vec3d.of(newBlockPos.subtract(context.getBlockPos()));
@@ -367,11 +391,11 @@ public class PackedChestItem extends Item {
                                 hitResult);
         }
 
-        @Nullable
-        private static BlockPos findConnectedChestPos(BlockPos pos, BlockState state) {
-                if (!(state.getBlock() instanceof ChestBlock)) {
-                        return null;
-                }
+		@Nullable
+		private static BlockPos findConnectedChestPos(BlockPos pos, BlockState state) {
+				if (!(state.getBlock() instanceof ChestBlock)) {
+						return null;
+				}
 
                 if (state.get(ChestBlock.CHEST_TYPE) == ChestType.SINGLE) {
                         return null;
@@ -394,13 +418,100 @@ public class PackedChestItem extends Item {
                 }
         }
 
-        private record PlacementPlan(BlockPos primaryPos, BlockState primaryState,
-                        TypedEntityData<BlockEntityType<?>> primaryData, @Nullable BlockPos secondaryPos,
-                        @Nullable BlockState secondaryState, @Nullable TypedEntityData<BlockEntityType<?>> secondaryData) {
-                private boolean isDouble() {
-                        return secondaryPos != null && secondaryState != null && secondaryData != null;
-                }
-        }
+		private record PlacementPlan(BlockPos primaryPos, BlockState primaryState,
+						TypedEntityData<BlockEntityType<?>> primaryData, @Nullable BlockPos secondaryPos,
+						@Nullable BlockState secondaryState, @Nullable TypedEntityData<BlockEntityType<?>> secondaryData,
+						@Nullable NeighborMerge neighborMerge) {
+				private boolean isDouble() {
+						return secondaryPos != null && secondaryState != null && secondaryData != null;
+				}
+		}
+
+		private record NeighborMerge(BlockPos neighborPos, BlockState neighborState) {
+		}
+
+		private record NeighborMergeResult(BlockState primaryState, NeighborMerge merge) {
+		}
+
+		private record MergeCandidate(BlockPos neighborPos, BlockState primaryState, BlockState neighborState) {
+		}
+
+		@Nullable
+		private static NeighborMergeResult computeNeighborMerge(World world, BlockPos primaryPos, BlockState primaryState) {
+				if (!(primaryState.getBlock() instanceof ChestBlock)) {
+						return null;
+				}
+
+				if (!primaryState.contains(ChestBlock.CHEST_TYPE) || !primaryState.contains(ChestBlock.FACING)) {
+						return null;
+				}
+
+				if (primaryState.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
+						return null;
+				}
+
+				Direction facing = primaryState.get(ChestBlock.FACING);
+				MergeCandidate leftCandidate = createMergeCandidate(world, primaryPos, primaryState,
+								facing.rotateYCounterclockwise(), ChestType.RIGHT, ChestType.LEFT);
+				MergeCandidate rightCandidate = createMergeCandidate(world, primaryPos, primaryState,
+								facing.rotateYClockwise(), ChestType.LEFT, ChestType.RIGHT);
+
+				if (leftCandidate != null && rightCandidate != null) {
+						return null;
+				}
+
+				MergeCandidate selected = leftCandidate != null ? leftCandidate : rightCandidate;
+				if (selected == null) {
+						return null;
+				}
+
+				return new NeighborMergeResult(selected.primaryState(),
+								new NeighborMerge(selected.neighborPos(), selected.neighborState()));
+		}
+
+		@Nullable
+		private static MergeCandidate createMergeCandidate(World world, BlockPos primaryPos, BlockState primaryState,
+						Direction offsetDirection, ChestType primaryType, ChestType neighborType) {
+				BlockPos neighborPos = primaryPos.offset(offsetDirection);
+				BlockState neighborState = world.getBlockState(neighborPos);
+				if (!canMergeWithNeighbor(primaryState, neighborState)) {
+						return null;
+				}
+
+				BlockPos oppositePos = primaryPos.offset(offsetDirection.getOpposite());
+				BlockState oppositeState = world.getBlockState(oppositePos);
+				if (canMergeWithNeighbor(primaryState, oppositeState)) {
+						return null;
+				}
+
+				BlockState updatedPrimary = primaryState.with(ChestBlock.CHEST_TYPE, primaryType);
+				BlockState updatedNeighbor = neighborState.with(ChestBlock.CHEST_TYPE, neighborType);
+				return new MergeCandidate(neighborPos, updatedPrimary, updatedNeighbor);
+		}
+
+		private static boolean canMergeWithNeighbor(BlockState primaryState, BlockState neighborState) {
+				if (!(primaryState.getBlock() instanceof ChestBlock)) {
+						return false;
+				}
+
+				if (neighborState == null) {
+						return false;
+				}
+
+				if (neighborState.getBlock() != primaryState.getBlock()) {
+						return false;
+				}
+
+				if (!neighborState.contains(ChestBlock.CHEST_TYPE) || !neighborState.contains(ChestBlock.FACING)) {
+						return false;
+				}
+
+				if (neighborState.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
+						return false;
+				}
+
+				return neighborState.get(ChestBlock.FACING) == primaryState.get(ChestBlock.FACING);
+		}
 
         public static Optional<PlacementPreview> getPlacementPreview(World world, ItemPlacementContext placementContext,
                         ItemStack stack) {

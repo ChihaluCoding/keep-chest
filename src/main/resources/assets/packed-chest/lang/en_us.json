@@ -11,8 +11,5 @@
   "item.packed-chest.packed_waxed_oxidized_copper_chest": "Packed Waxed Oxidized Copper Chest",
   "item.packed-chest.packed_barrel": "Packed Barrel",
   "message.packed-chest.pack_failed": "Could not pack this container.",
-  "message.packed-chest.unpack_failed": "Failed to place the packed container.",
-  "screen.packed_chest.config.title": "Packed Chest Settings",
-  "option.packed_chest.preview_movement": "Allow moving items in preview"
+  "message.packed-chest.unpack_failed": "Failed to place the packed container."
 }
-

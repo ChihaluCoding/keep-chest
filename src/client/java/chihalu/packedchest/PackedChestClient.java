@@ -2,7 +2,6 @@ package chihalu.packedchest;
 
 import java.util.Optional;
 
-import chihalu.packedchest.config.PackedChestClientConfig;
 import chihalu.packedchest.item.PackedChestItem;
 import chihalu.packedchest.item.PackedChestItems;
 import net.fabricmc.api.ClientModInitializer;
@@ -19,7 +18,6 @@ import net.minecraft.util.math.Direction;
 public class PackedChestClient implements ClientModInitializer {
         @Override
         public void onInitializeClient() {
-                PackedChestClientConfig.get();
                 // Client-specific setup is handled via dedicated mixins.
         }
 

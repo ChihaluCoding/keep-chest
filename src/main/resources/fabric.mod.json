@@ -21,9 +21,6 @@
 		"client": [
 			"chihalu.packedchest.PackedChestClient"
 		],
-		"modmenu": [
-			"chihalu.packedchest.config.PackedChestModMenuIntegration"
-		],
 		"fabric-datagen": [
 			"chihalu.packedchest.PackedChestDataGenerator"
 		]
